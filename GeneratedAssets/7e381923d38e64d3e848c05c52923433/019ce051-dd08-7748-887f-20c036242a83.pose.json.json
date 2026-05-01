@@ -1,0 +1,11 @@
+{
+    "asset": "7e381923d38e64d3e848c05c52923433",
+    "fileName": "019ce051-dd08-7748-887f-20c036242a83.pose.json",
+    "prompt": "A realistic sprinting animation for a humanoid male character, high energy, fast pace, leaning forward, powerful arm swings, synchronized leg movements.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 68451216,
+    "w3CTraceId": "7e8db0ec5075537bb9183c8015dcff70",
+    "isTrimmed": false
+}

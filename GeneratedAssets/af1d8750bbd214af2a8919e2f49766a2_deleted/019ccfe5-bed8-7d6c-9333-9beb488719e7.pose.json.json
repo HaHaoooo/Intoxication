@@ -1,0 +1,11 @@
+{
+    "asset": "af1d8750bbd214af2a8919e2f49766a2",
+    "fileName": "019ccfe5-bed8-7d6c-9333-9beb488719e7.pose.json",
+    "prompt": "a man running cycle animation",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 994754302,
+    "w3CTraceId": "ded1ca2d953abfc8f210e492661c68d2",
+    "isTrimmed": false
+}

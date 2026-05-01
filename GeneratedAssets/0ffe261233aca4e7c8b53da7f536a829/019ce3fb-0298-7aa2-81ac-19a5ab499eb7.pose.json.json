@@ -1,0 +1,11 @@
+{
+    "asset": "0ffe261233aca4e7c8b53da7f536a829",
+    "fileName": "019ce3fb-0298-7aa2-81ac-19a5ab499eb7.pose.json",
+    "prompt": "A bartender shaking a cocktail shaker with both hands in a rhythmic motion, loopable.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 2001823085,
+    "w3CTraceId": "cde988fdc7434f4b572cf0cf56bfc866",
+    "isTrimmed": false
+}

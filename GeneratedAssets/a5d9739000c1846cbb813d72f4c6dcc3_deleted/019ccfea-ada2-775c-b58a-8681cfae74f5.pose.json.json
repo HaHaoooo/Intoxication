@@ -1,0 +1,11 @@
+{
+    "asset": "a5d9739000c1846cbb813d72f4c6dcc3",
+    "fileName": "019ccfea-ada2-775c-b58a-8681cfae74f5.pose.json",
+    "prompt": "athletic male running cycle animation, steady jogging pace, smooth loops",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 558246299,
+    "w3CTraceId": "c31f4cc4f9978ac6b29bd612f9814f03",
+    "isTrimmed": false
+}

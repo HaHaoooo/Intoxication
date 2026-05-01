@@ -1,0 +1,13 @@
+{
+    "asset": "04c974f9d044a49f6a1026bb5f819fa1",
+    "fileName": "019cd125-855a-7e12-b81c-67998cb443d5.wav",
+    "prompt": "Steady rain falling on city street, wet pavement, atmosphere sound",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "72afb08c4c47657e8f325b1ffc66fedf",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

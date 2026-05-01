@@ -1,0 +1,13 @@
+{
+    "asset": "1f86b4f109aa0494294a73e1bb3de1df",
+    "fileName": "019cdfbe-1c72-7ae3-9267-77207112c8e7.wav",
+    "prompt": "short item pickup sound, subtle wood or fabric sound, light click or whoosh, quiet and realistic",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "4eabe5702148ac6f6ec606a3a40c58c9",
+    "duration": 1.0,
+    "autoTrim": false,
+    "hasReference": false
+}

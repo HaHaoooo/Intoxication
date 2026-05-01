@@ -1,0 +1,13 @@
+{
+    "asset": "fc3bb08eb8acd4f4893cba09f4eb1648",
+    "fileName": "019cd10f-c8c9-79e3-8019-71d31f231585.wav",
+    "prompt": "Steady low-frequency human heartbeat, rhythmic, slightly muffled, anxiety-inducing",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "d69d2255eb1c37c80238928edcc88321",
+    "duration": 5.0,
+    "autoTrim": false,
+    "hasReference": false
+}

@@ -1,0 +1,13 @@
+{
+    "asset": "38190f4ceed16448ca4eb4d7fcfdf8f6",
+    "fileName": "019cd119-2425-7595-b4ab-1ab3fc3c425e.wav",
+    "prompt": "Sharp electric pop, glass breaking, light bulb exploding, short, loud",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "1df8b1962dedeb04aff7a0832fd263f5",
+    "duration": 1.0,
+    "autoTrim": false,
+    "hasReference": false
+}

@@ -1,0 +1,11 @@
+{
+    "asset": "6a9eeb7a1034546898601cd7629f6e02",
+    "fileName": "019ce051-d6a9-7258-885b-e985b2a390ea.pose.json",
+    "prompt": "A realistic idle animation for a humanoid male character, standing naturally with slight weight shifts and breathing, subtle and lifelike.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 253556070,
+    "w3CTraceId": "bbc4f74a68735692426ff4838493f541",
+    "isTrimmed": false
+}

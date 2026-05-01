@@ -1,0 +1,11 @@
+{
+    "asset": "207c1771743154023b311c1c502b25ba",
+    "fileName": "019ccfea-b4d9-762a-9f0c-ebe9b1f9a4f5.pose.json",
+    "prompt": "natural male standing idle animation, breathing, occasional weight shift, realistic posture",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 1364398006,
+    "w3CTraceId": "87beb93d7cb23d878a0aa8af67fa2140",
+    "isTrimmed": false
+}

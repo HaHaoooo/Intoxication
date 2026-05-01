@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Menu.uss" />
+    <ui:VisualElement name="root-container">
+        <ui:VisualElement name="main-page" class="page">
+            <ui:Label name="game-title" text="INTOXICATION" />
+            <ui:VisualElement name="menu-items">
+                <ui:Button name="play-btn" text="PLAY" class="menu-btn" />
+                <ui:Button name="settings-btn" text="SETTINGS" class="menu-btn" />
+                <ui:Button name="quit-btn" text="QUIT" class="menu-btn" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="settings-page" class="page hidden">
+            <ui:Label name="settings-title" text="SETTINGS" />
+            <ui:VisualElement name="settings-items">
+                <ui:VisualElement class="setting-row">
+                    <ui:Label text="VOLUME" class="setting-label" />
+                    <ui:Slider name="volume-slider" low-value="0" high-value="100" value="80" class="unity-slider" />
+                </ui:VisualElement>
+                <ui:VisualElement class="setting-row">
+                    <ui:Label text="SENSITIVITY" class="setting-label" />
+                    <ui:Slider name="sens-slider" low-value="1" high-value="10" value="5" class="unity-slider" />
+                </ui:VisualElement>
+                <ui:Button name="back-btn" text="BACK" class="menu-btn" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="overlay" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,13 @@
+{
+    "asset": "0d67f10ac014f431ba23318e1cd02261",
+    "fileName": "019cf990-1223-7386-919f-2877187fe645.wav",
+    "prompt": "A young child sobbing quietly and sniffing, emotional, soft crying, loopable",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "973e44e65107926e52cc84681d693261",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

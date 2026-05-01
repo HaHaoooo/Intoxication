@@ -1,0 +1,13 @@
+{
+    "asset": "608afdebfb7334d0b8f3587e55d0c5c3",
+    "fileName": "019cd118-d5dd-7a90-9592-fe46c1bf6c48.wav",
+    "prompt": "Creepy child giggle, distant, reverb, echoey, ghostly",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "5c6e25f20d3ae194033f8b6d26f86bc4",
+    "duration": 2.0,
+    "autoTrim": false,
+    "hasReference": false
+}

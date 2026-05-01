@@ -1,0 +1,13 @@
+{
+    "asset": "b6cb8bf59255d4100b86b85a8402bf5d",
+    "fileName": "019cd117-d9aa-7644-b4b4-86e05a110794.wav",
+    "prompt": "Heavy, rhythmic footstep on stone, slightly stumbling, echoey",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "79036b82b00987b53f52562619efcd08",
+    "duration": 1.0,
+    "autoTrim": false,
+    "hasReference": false
+}

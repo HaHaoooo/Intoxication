@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8649f54ff46ba4b25be13cc3020d20ce, type: 3}
+  m_Name: BartenderVoice
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceProfile
+  phonemes:
+  - {fileID: 8300000, guid: f83abb1fb68154bc6b9a075ba6bf491f, type: 3}
+  - {fileID: 8300000, guid: 94d01d66c56e8452fa2fe73f56eac732, type: 3}
+  - {fileID: 8300000, guid: 8c3ae93ccbca24cbcb87557efd4ba58b, type: 3}
+  - {fileID: 8300000, guid: b02f484c3692545169604d5b52e3ce49, type: 3}
+  minPitch: 0.85
+  maxPitch: 1.2
+  volume: 1
+  playEveryNCharacters: 2

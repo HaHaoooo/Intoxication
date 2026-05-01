@@ -1,0 +1,11 @@
+{
+    "asset": "737cd6b623f174c03b2b418660fa399d",
+    "fileName": "019cf374-5fa3-7c5e-a248-f07f289dc3c7.pose.json",
+    "prompt": "A child sitting on the floor with legs pulled in, hugging knees with both arms, head buried in knees or sobbing, body trembling from crying, sitting posture, not kneeling.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 1494260636,
+    "w3CTraceId": "f2985ab82c596b0e0132b31b1c1e0433",
+    "isTrimmed": false
+}

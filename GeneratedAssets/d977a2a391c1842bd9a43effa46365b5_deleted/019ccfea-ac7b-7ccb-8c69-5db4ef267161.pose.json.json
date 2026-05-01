@@ -1,0 +1,11 @@
+{
+    "asset": "d977a2a391c1842bd9a43effa46365b5",
+    "fileName": "019ccfea-ac7b-7ccb-8c69-5db4ef267161.pose.json",
+    "prompt": "natural male walking cycle animation, standard tempo, smooth loops",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 2074899927,
+    "w3CTraceId": "5660d40f9486d50e9cd62a76ad48f027",
+    "isTrimmed": false
+}

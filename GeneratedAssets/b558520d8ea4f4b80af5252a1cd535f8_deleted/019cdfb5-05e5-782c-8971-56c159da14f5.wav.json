@@ -1,0 +1,13 @@
+{
+    "asset": "b558520d8ea4f4b80af5252a1cd535f8",
+    "fileName": "019cdfb5-05e5-782c-8971-56c159da14f5.wav",
+    "prompt": "steady ambient rain sound, soft rain on pavement, loopable, calm, quiet atmosphere",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "65ed347ce5c805c6fbe38a648f07a63f",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

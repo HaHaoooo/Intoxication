@@ -1,0 +1,13 @@
+{
+    "asset": "c44ce50a86e704e14bdf43b5da93c831",
+    "fileName": "019cd10f-c87d-7120-802e-2acd770ab31b.wav",
+    "prompt": "Many creepy indistinct human whispers, overlapping, panning left and right, ghostly atmosphere",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "3218ec23c057ca9e884518750b0d2cb3",
+    "duration": 8.0,
+    "autoTrim": false,
+    "hasReference": false
+}

@@ -1,0 +1,13 @@
+{
+    "asset": "818a62b003c964d149788d17ed80f1d3",
+    "fileName": "019ce56d-7f19-76ad-b33f-14f071984e24.wav",
+    "prompt": "Short digital electronic beep, robotic, high pitch, retro computer sound, UI blip 3",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "12a6ce174a36604736906221749d8ab6",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

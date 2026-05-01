@@ -1,0 +1,11 @@
+{
+    "asset": "99c6198a3b1d34d0fba998abf19c8426",
+    "fileName": "019ccfed-d984-736e-9e7d-be96811d8bfa.pose.json",
+    "prompt": "high intensity male sprinting cycle animation, leaning forward, explosive power, smooth loops",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 1222457327,
+    "w3CTraceId": "b8e59ea577615792a950daf7b8605234",
+    "isTrimmed": false
+}

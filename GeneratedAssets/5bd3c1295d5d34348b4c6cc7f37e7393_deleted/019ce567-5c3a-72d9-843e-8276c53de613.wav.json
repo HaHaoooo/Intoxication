@@ -1,0 +1,13 @@
+{
+    "asset": "5bd3c1295d5d34348b4c6cc7f37e7393",
+    "fileName": "019ce567-5c3a-72d9-843e-8276c53de613.wav",
+    "prompt": "Short male voice grumble, gibberish, nonsensical speech, 1 second long",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "49b4831c73b64eb68ad9377dfce36a44",
+    "duration": 1.0,
+    "autoTrim": false,
+    "hasReference": false
+}

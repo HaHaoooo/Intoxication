@@ -1,0 +1,11 @@
+{
+    "asset": "e4961ecf331e849498064b2103e98ecc",
+    "fileName": "019cf375-9bff-714e-9546-9b80d8a0cd44.pose.json",
+    "prompt": "A person sitting on the floor with buttocks on the ground, legs pulled tightly to the chest, arms hugging the knees, head buried in the knees, body shaking from crying and sobbing. Sitting posture, not kneeling.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 238812737,
+    "w3CTraceId": "b1a56b7376ddc19ad0bc784710736b9b",
+    "isTrimmed": false
+}

@@ -1,0 +1,13 @@
+{
+    "asset": "0d8ee4704b1474c93a57f8f04974f584",
+    "fileName": "019cd120-b4d2-7e0f-8a0a-2fdd4ba4ae35.wav",
+    "prompt": "Dark, windy city night ambience, distant sirens, low hum, creepy atmosphere",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "2ed69a4dd96db6de84ca5953684b2cc4",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

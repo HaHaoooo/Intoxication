@@ -1,0 +1,13 @@
+{
+    "asset": "167e242e5e62e4acea160ac6872d08cd",
+    "fileName": "019cd10f-cfb2-7418-86d5-0f76f7598d1b.wav",
+    "prompt": "Single sharp wine bottle shattering on stone floor, debris scattering",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "3da414f21f3bf20a1076baca3dad3325",
+    "duration": 2.0,
+    "autoTrim": false,
+    "hasReference": false
+}

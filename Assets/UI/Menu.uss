@@ -1,0 +1,44 @@
+#root-container {
+    width: 100%; height: 100%;
+    background-color: #050505;
+    overflow: hidden;
+    color: #b0b0b0;
+    align-items: center; justify-content: center;
+}
+#overlay {
+    position: absolute; width: 100%; height: 100%;
+    background-image: radial-gradient(rgba(40, 0, 0, 0.1), rgba(0, 0, 0, 0.95));
+    pointer-events: none;
+    border-width: 60px; border-color: rgba(0,0,0,0.8);
+}
+.page {
+    width: 100%; height: 100%;
+    justify-content: center; align-items: center;
+}
+.hidden { display: none; visibility: hidden; }
+#game-title, #settings-title {
+    font-size: 90px; -unity-font-style: bold;
+    color: #600000; margin-bottom: 80px;
+    text-shadow: 5px 0 0 rgba(255, 0, 0, 0.2), -5px 0 0 rgba(0, 255, 255, 0.1);
+    letter-spacing: 25px;
+}
+#menu-items, #settings-items { width: 600px; align-items: stretch; }
+.menu-btn {
+    background-color: transparent; border-width: 0;
+    color: #444; font-size: 24px; height: 70px; margin-bottom: 10px;
+    transition: color 0.05s ease, scale 0.1s ease;
+    letter-spacing: 10px;
+}
+.menu-btn:hover {
+    color: #d00000; scale: 1.1;
+    -unity-font-style: bold;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+.setting-row {
+    flex-direction: row; justify-content: space-between;
+    align-items: center; margin-bottom: 45px;
+}
+.setting-label { font-size: 18px; color: #555; width: 250px; letter-spacing: 4px; }
+.unity-slider { flex-grow: 1; }
+.unity-base-slider__dragger { background-color: #400000; width: 18px; height: 30px; border-radius: 0; }
+.unity-base-slider__dragger:hover { background-color: #800000; }

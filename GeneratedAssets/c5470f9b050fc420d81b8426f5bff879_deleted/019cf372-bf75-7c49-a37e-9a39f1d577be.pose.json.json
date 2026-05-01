@@ -1,0 +1,11 @@
+{
+    "asset": "c5470f9b050fc420d81b8426f5bff879",
+    "fileName": "019cf372-bf75-7c49-a37e-9a39f1d577be.pose.json",
+    "prompt": "a child sitting on the ground and crying, covering eyes with hands, sobbing body movement",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 586897868,
+    "w3CTraceId": "0cbb75fa2a0acc205a6d3c0246f3db84",
+    "isTrimmed": false
+}

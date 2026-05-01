@@ -1,0 +1,11 @@
+{
+    "asset": "04e16adc456284366951f2583a1d0dc7",
+    "fileName": "019ccfe5-c3a2-793c-a4c0-587cf94e4fd8.pose.json",
+    "prompt": "a man idle breathing animation",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 73680114,
+    "w3CTraceId": "f697954983ca337478f46733de7c1e26",
+    "isTrimmed": false
+}

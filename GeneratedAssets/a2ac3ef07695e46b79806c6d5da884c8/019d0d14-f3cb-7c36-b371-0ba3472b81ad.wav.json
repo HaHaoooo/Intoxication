@@ -1,0 +1,13 @@
+{
+    "asset": "a2ac3ef07695e46b79806c6d5da884c8",
+    "fileName": "019d0d14-f3cb-7c36-b371-0ba3472b81ad.wav",
+    "prompt": "high-pitched terrifying horror girl scream jumpscare",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "aa33b610fd846c344892ce4cc9516dd5",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

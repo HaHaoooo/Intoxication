@@ -1,0 +1,13 @@
+{
+    "asset": "414a4fbf620954fa4927d894eaa12792",
+    "fileName": "019cdfc4-f6ec-7a81-b3d6-90b296491768.wav",
+    "prompt": "extremely soft, quiet, steady distant rain ambient, very calm and low volume, looping",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "e527dbaeb71b3b5d14128e321e1b5baa",
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false
+}

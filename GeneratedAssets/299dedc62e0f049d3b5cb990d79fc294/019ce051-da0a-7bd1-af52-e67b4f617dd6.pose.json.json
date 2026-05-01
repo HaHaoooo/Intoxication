@@ -1,0 +1,11 @@
+{
+    "asset": "299dedc62e0f049d3b5cb990d79fc294",
+    "fileName": "019ce051-da0a-7bd1-af52-e67b4f617dd6.pose.json",
+    "prompt": "A realistic walking animation for a humanoid male character, natural stride, smooth transitions, synchronized arms and legs, medium pace.",
+    "negativePrompt": "",
+    "model": "9e46c009-67d8-4254-a3a0-32e3168247ee",
+    "modelName": "Text to Motion",
+    "customSeed": 1066055833,
+    "w3CTraceId": "105fd593d45afb52e361995154cafc7c",
+    "isTrimmed": false
+}

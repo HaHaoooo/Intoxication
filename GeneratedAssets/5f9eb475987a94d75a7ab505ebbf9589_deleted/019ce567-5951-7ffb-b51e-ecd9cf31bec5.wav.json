@@ -1,0 +1,13 @@
+{
+    "asset": "5f9eb475987a94d75a7ab505ebbf9589",
+    "fileName": "019ce567-5951-7ffb-b51e-ecd9cf31bec5.wav",
+    "prompt": "Short male voice mumble, gibberish, nonsensical speech, low pitch, 1 second long",
+    "negativePrompt": "",
+    "model": "5de0686a-fb27-40e5-9df0-28ae810d70ca",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "5a5b0d4ea8e52834f4c0df4eac257587",
+    "duration": 1.0,
+    "autoTrim": false,
+    "hasReference": false
+}
