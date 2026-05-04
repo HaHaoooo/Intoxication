@@ -1,16 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-/// Moves the kid ghost toward the player at a constant speed,
-/// capped to never exceed the player's own walk speed.
+/// Moves the kid ghost toward the player at a constant speed.
 /// The ghost's head always tracks the player regardless of model orientation.
-/// Uses distance-based touch detection to deal damage — more reliable than
-/// trigger physics when the player uses a CharacterController.
+/// Uses distance-based touch detection to deal damage.
 /// </summary>
 public class KidGhostMover : MonoBehaviour
 {
     /// <summary>Movement speed in units per second.</summary>
-    public float moveSpeed = 2f;
+    public float moveSpeed = 10.5f;
 
     /// <summary>
     /// Y-axis offset (degrees) applied after LookAt to align the model's head
@@ -25,15 +23,14 @@ public class KidGhostMover : MonoBehaviour
     private PlayerHealthController _playerHealth;
 
     /// <summary>
-    /// Initializes the ghost mover with a target and validated speed.
+    /// Initializes the ghost mover with a target.
     /// </summary>
     /// <param name="player">The player's transform to chase.</param>
-    /// <param name="speed">Desired speed, clamped to playerMaxSpeed.</param>
-    /// <param name="playerMaxSpeed">The player's maximum allowed speed cap.</param>
-    public void Initialize(Transform player, float speed, float playerMaxSpeed)
+    /// <param name="speed">Desired movement speed.</param>
+    public void Initialize(Transform player, float speed)
     {
         _playerTransform = player;
-        moveSpeed = Mathf.Min(speed, playerMaxSpeed);
+        moveSpeed = speed;
 
         if (player != null)
         {
@@ -52,9 +49,7 @@ public class KidGhostMover : MonoBehaviour
 
         // Move toward the player
         if (distance > 0.0001f)
-        {
-            transform.position += toPlayer.normalized * moveSpeed * Time.deltaTime;
-        }
+            transform.position += toPlayer.normalized * (moveSpeed * Time.deltaTime);
 
         // Head always tracks the player on the horizontal plane
         Vector3 flatDirection = new Vector3(toPlayer.x, 0f, toPlayer.z);
@@ -64,10 +59,8 @@ public class KidGhostMover : MonoBehaviour
             transform.rotation = lookRotation * Quaternion.Euler(0f, modelFacingYOffset, 0f);
         }
 
-        // Distance-based touch — PlayerHealthController handles the 1-second invincibility window
+        // Distance-based touch — PlayerHealthController handles the invincibility window
         if (distance <= touchDistance)
-        {
             _playerHealth?.TryTakeDamage();
-        }
     }
 }
