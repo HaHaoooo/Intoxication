@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Player;
 
@@ -6,12 +7,21 @@ using Player;
 /// Automatically creates an interaction collider on the visible mesh child at startup —
 /// no manual BoxCollider setup required.
 /// When the player presses F, the axe disappears from the world,
-/// attaches to the player's right hand bone, and enables the AxeWeapon component.
+/// attaches to the player's right hand bone, enables the AxeWeapon component,
+/// and plays a short internal monologue via DialogueUI.
 /// </summary>
 public class AxePickup : MonoBehaviour, IInteractable
 {
     private const string PromptText = "[ F ] Pick up axe";
     private const float AutoColliderRadius = 1.5f;
+
+    private static readonly DialogueData.Line[] PickupMonologue = new[]
+    {
+        new DialogueData.Line { speaker = "You", text = "An axe..." },
+        new DialogueData.Line { speaker = "You", text = "That bartender said anything could become a weapon." },
+        new DialogueData.Line { speaker = "You", text = "I shouldn't touch this." },
+        new DialogueData.Line { speaker = "You", text = "But I don't think I have a choice." },
+    };
 
     [Header("References")]
     [Tooltip("The player GameObject that has an AxeWeapon component.")]
@@ -117,7 +127,28 @@ public class AxePickup : MonoBehaviour, IInteractable
         if (weapon == null) weapon = playerObject.AddComponent<AxeWeapon>();
         weapon.Enable();
 
+        // Play pickup monologue, then update objective
+        StartCoroutine(PlayMonologueThenObjective());
         Debug.Log("[AxePickup] Axe picked up and attached to hand.");
+    }
+
+    private IEnumerator PlayMonologueThenObjective()
+    {
+        DialogueUI ui = DialogueUI.Instance;
+        if (ui != null)
+        {
+            bool done = false;
+            DialogueData data = ScriptableObject.CreateInstance<DialogueData>();
+            data.lines = PickupMonologue;
+
+            ui.OnDialogueEnded += OnMonologueDone;
+            ui.StartDialogue(data);
+
+            void OnMonologueDone() { done = true; ui.OnDialogueEnded -= OnMonologueDone; }
+            yield return new WaitUntil(() => done);
+        }
+
+        ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
     }
 
     // --- Helpers ---

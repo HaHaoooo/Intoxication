@@ -41,7 +41,7 @@ public class DialogueUI : MonoBehaviour
     private bool _isTyping;
     private string _fullText;
     private readonly StringBuilder _typewriterBuffer = new StringBuilder(256);
-    private WaitForSeconds _typewriterWait;
+    private WaitForSecondsRealtime _typewriterWait;
 
     private static DialogueUI _instance;
 
@@ -49,6 +49,10 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private float charactersPerSecond = 30f;
 
     private float _lastCps = -1f;
+
+    // Tracks how many dialogue sessions are open so nested chains don't
+    // restore time-scale until the outermost dialogue is fully finished.
+    private int _freezeDepth;
 
     /// <summary>Returns the singleton instance, creating one if needed.</summary>
     public static DialogueUI Instance
@@ -144,6 +148,11 @@ public class DialogueUI : MonoBehaviour
         _currentLineIndex = 0;
         IsActive = true;
 
+        // Freeze game time so nothing moves or attacks during dialogue.
+        // Increment depth so chained dialogues don't double-unfreeze.
+        _freezeDepth++;
+        Time.timeScale = 0f;
+
         dialoguePanel.SetActive(true);
         DisplayCurrentLine();
 
@@ -190,12 +199,12 @@ public class DialogueUI : MonoBehaviour
 
         DialogueVoiceController voice = DialogueVoiceController.GetByName(speaker);
         int phonemeFrequency = voice != null ? voice.GetPlayFrequency() : 2;
-        
-        // Cache wait object, only rebuild if CPS changes
+
+        // Use real-time wait so typewriter keeps running when timeScale == 0.
         if (Mathf.Abs(charactersPerSecond - _lastCps) > 0.01f)
         {
             _lastCps = charactersPerSecond;
-            _typewriterWait = new WaitForSeconds(1f / Mathf.Max(1f, charactersPerSecond));
+            _typewriterWait = new WaitForSecondsRealtime(1f / Mathf.Max(1f, charactersPerSecond));
         }
 
         for (int i = 0; i < fullText.Length; i++)
@@ -230,6 +239,11 @@ public class DialogueUI : MonoBehaviour
         _currentLineIndex = 0;
 
         dialoguePanel.SetActive(false);
+
+        // Restore time only when no more dialogue layers are open.
+        _freezeDepth = Mathf.Max(0, _freezeDepth - 1);
+        if (_freezeDepth == 0)
+            Time.timeScale = 1f;
 
         OnDialogueEnded?.Invoke();
         Debug.Log("[DialogueUI] Dialogue ended.");

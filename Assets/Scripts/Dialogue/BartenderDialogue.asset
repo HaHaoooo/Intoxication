@@ -29,3 +29,31 @@ MonoBehaviour:
     text: Hope everything goes well...
   - speaker: Bartender
     text: Here you are. This is our signature.
+  - speaker: You
+    text: Thanks.
+  - speaker: Bartender
+    text: And sir... be careful when you leave.
+  - speaker: You
+    text: Why?
+  - speaker: Bartender
+    text: People like that murderer do not always plan everything.
+  - speaker: Bartender
+    text: Sometimes they just pick up whatever is around them.
+  - speaker: You
+    text: What do you mean?
+  - speaker: Bartender
+    text: Bottles. Pipes. Broken tools. Even an axe.
+  - speaker: Bartender
+    text: Anything can become a weapon in the wrong hands.
+  - speaker: You
+    text: That sounds pretty serious.
+  - speaker: Bartender
+    text: It is. If you see something strange outside, do not get close.
+  - speaker: Bartender
+    text: And if someone comes after you...
+  - speaker: Bartender
+    text: Use whatever you can to survive.
+  - speaker: You
+    text: I understand.
+  - speaker: Bartender
+    text: Good. Now drink slowly, sir. It is a dangerous night.

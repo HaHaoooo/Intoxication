@@ -87,7 +87,7 @@ public class BartenderInteraction : MonoBehaviour, IInteractable
         Debug.Log("[BartenderInteraction] Started dialogue with bartender.");
     }
 
-    /// <summary>Called when the dialogue sequence finishes; spawns the bottle.</summary>
+    /// <summary>Called when the dialogue sequence finishes; spawns the bottle and advances objective.</summary>
     private void HandleDialogueEnded()
     {
         if (_cachedDialogueUI != null)
@@ -99,6 +99,7 @@ public class BartenderInteraction : MonoBehaviour, IInteractable
         _hasInteracted = true;
 
         SpawnBottle();
+        ObjectiveUI.Instance?.Set(ObjectiveState.CheckSurroundings);
         Debug.Log("[BartenderInteraction] Dialogue complete. Bottle spawned.");
     }
 

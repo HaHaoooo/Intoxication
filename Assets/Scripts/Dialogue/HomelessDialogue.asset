@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05baf6446e8e3440d9ed167e8ec04d30, type: 3}
+  m_Name: HomelessDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - speaker: Homeless Man
+    text: Leave.
+  - speaker: You
+    text: "Wait\u2026 what?"
+  - speaker: Homeless Man
+    text: Don't come closer.
+  - speaker: You
+    text: I'm just trying to get home.
+  - speaker: Homeless Man
+    text: Home? You don't get to say that word anymore.
+  - speaker: You
+    text: "Do I\u2026 know you?"
+  - speaker: Homeless Man
+    text: You know exactly what you did.
+  - speaker: You
+    text: "No\u2026 no, I don't. I just need my keys."
+  - speaker: Homeless Man
+    text: Don't let me see you ever again.
+  - speaker: You
+    text: Why are you saying that?
+  - speaker: Homeless Man
+    text: Get out of my sight.
+  - speaker: You
+    text: "Stop\u2026 please. Who are you?"
+  - speaker: Homeless Man
+    text: Someone who got tired of waiting for you to change.
+  - speaker: You
+    text: "\u2026"
+  - speaker: Homeless Man
+    text: Leave.

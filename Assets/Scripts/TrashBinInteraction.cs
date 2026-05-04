@@ -2,8 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// Makes the trash bin interactable via the F key.
-/// On interact: plays the trash bin sound and animates the door
-/// falling straight down to ground level.
+/// On interact: plays the trash bin sound, animates the door falling to the ground,
+/// and optionally reveals a hidden homeless man NPC nearby.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class TrashBinInteraction : MonoBehaviour, IInteractable
@@ -11,6 +11,9 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
     [Header("References")]
     [Tooltip("The Door_2 Transform that will fall to the ground on interaction.")]
     [SerializeField] private Transform door;
+
+    [Tooltip("The homeless man GameObject to reveal after interaction (must be inactive in the scene).")]
+    [SerializeField] private GameObject homelessMan;
 
     [Header("Settings")]
     [Tooltip("Interaction prompt shown to the player.")]
@@ -55,7 +58,7 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
     /// <summary>Whether the trash bin can still be interacted with.</summary>
     public bool CanInteract() => !_hasInteracted;
 
-    /// <summary>Plays the sound and starts the door falling animation.</summary>
+    /// <summary>Plays the sound, starts the door falling animation, and reveals the homeless man.</summary>
     public void OnInteract()
     {
         if (!CanInteract()) return;
@@ -67,6 +70,9 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
 
         _isFalling = true;
 
-        Debug.Log("[TrashBinInteraction] Interaction triggered — door falling.");
+        if (homelessMan != null)
+            homelessMan.SetActive(true);
+
+        Debug.Log("[TrashBinInteraction] Interaction triggered — door falling, homeless man revealed.");
     }
 }
