@@ -357,16 +357,28 @@ public class PlayerPickupController : MonoBehaviour
 
     // ──────────────────────────── Pickup / Drop / Throw ────────────────────────────
 
-    /// <summary>Picks up the target item.</summary>
+    /// <summary>Picks up the target item and registers it in the player's inventory.</summary>
     private void Pickup(Pickupable target)
     {
         _heldItem = target;
         _heldItem.OnPickedUp();
 
-        if (holdPoint != null)
+        // Special handling for the Axe: attach to bone instead of holdPoint
+        if (_heldItem is AxePickup axe)
+        {
+            axe.OnAxePickedUp(gameObject);
+        }
+        else if (holdPoint != null)
         {
             target.transform.position = holdPoint.position;
             target.transform.rotation = holdPoint.rotation;
+        }
+
+        // Register in inventory
+        if (PlayerInventory.Instance != null)
+        {
+            var item = new Player.InventoryItem(target.name, null, target.IsDrinkable, target);
+            PlayerInventory.Instance.AddItem(item);
         }
 
         ClearHover();
@@ -374,11 +386,19 @@ public class PlayerPickupController : MonoBehaviour
         SetCrosshairVisible(false);
     }
 
-    /// <summary>Drops the held item at its current position.</summary>
+    /// <summary>Drops the held item at its current position and removes it from inventory.</summary>
     private void Drop()
     {
         if (_heldItem == null) return;
 
+        // Special handling for Axe: disable weapon component
+        if (_heldItem is AxePickup)
+        {
+            AxeWeapon weapon = GetComponent<AxeWeapon>();
+            if (weapon != null) weapon.enabled = false;
+        }
+
+        RemoveFromInventory(_heldItem);
         ExitInspectIfActive();
         _heldItem.OnReleased();
         _heldItem = null;
@@ -386,12 +406,20 @@ public class PlayerPickupController : MonoBehaviour
         SetCrosshairVisible(true);
     }
 
-    /// <summary>Throws the held item forward.</summary>
+    /// <summary>Throws the held item forward and removes it from inventory.</summary>
     private void Throw()
     {
         if (_heldItem == null) return;
 
+        // Special handling for Axe: disable weapon component
+        if (_heldItem is AxePickup)
+        {
+            AxeWeapon weapon = GetComponent<AxeWeapon>();
+            if (weapon != null) weapon.enabled = false;
+        }
+
         Pickupable item = _heldItem;
+        RemoveFromInventory(item);
         ExitInspectIfActive();
         item.OnReleased();
         _heldItem = null;
@@ -620,7 +648,7 @@ public class PlayerPickupController : MonoBehaviour
         }
     }
 
-    /// <summary>Ends the drinking action: restores controls and destroys the consumed item.</summary>
+    /// <summary>Ends the drinking action: restores controls, removes from inventory, and destroys the consumed item.</summary>
     private void FinishDrinking()
     {
         _isDrinking = false;
@@ -630,6 +658,7 @@ public class PlayerPickupController : MonoBehaviour
 
         if (_heldItem != null)
         {
+            RemoveFromInventory(_heldItem);
             GameObject itemObj = _heldItem.gameObject;
             _heldItem = null;
             Destroy(itemObj);
@@ -637,6 +666,21 @@ public class PlayerPickupController : MonoBehaviour
         }
 
         SetCrosshairVisible(true);
+    }
+
+    /// <summary>Finds and removes the inventory entry matching the given Pickupable.</summary>
+    private static void RemoveFromInventory(Pickupable target)
+    {
+        if (PlayerInventory.Instance == null) return;
+
+        foreach (Player.InventoryItem entry in PlayerInventory.Instance.Items)
+        {
+            if (entry.sourcePickupable == target)
+            {
+                PlayerInventory.Instance.RemoveItem(entry);
+                return;
+            }
+        }
     }
 
     // ──────────────────────────── Drink Prompt UI ────────────────────────────

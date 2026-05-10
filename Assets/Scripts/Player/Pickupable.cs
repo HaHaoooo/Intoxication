@@ -3,21 +3,16 @@ using UnityEngine;
 /// <summary>
 /// Marks a GameObject as pickupable. Manages highlight, physics state, and collider toggling.
 /// Requires a Rigidbody on the same GameObject.
-/// Disables per-renderer occlusion and expands local bounds once at startup to prevent
-/// frustum culling issues with multi-part Blender models.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class Pickupable : MonoBehaviour
 {
     [Header("Highlight")]
-    [SerializeField] private Color highlightEmissionColor = new Color(0.3f, 0.3f, 0.05f);
+    [SerializeField] protected Color highlightEmissionColor = new Color(0.15f, 0.15f, 0.02f);
 
     [Header("Interaction")]
     [SerializeField] private bool isDrinkable;
 
-    [Header("Culling Fix")]
-    [Tooltip("Multiplier applied to each renderer's local bounds to prevent premature culling.")]
-    [SerializeField] private float boundsExpansionFactor = 3f;
 
     /// <summary>Whether this item can be consumed by the player (e.g. wine bottles).</summary>
     public bool IsDrinkable => isDrinkable;
@@ -41,7 +36,7 @@ public class Pickupable : MonoBehaviour
     private static readonly int CullId = Shader.PropertyToID("_Cull");
     private const int IGNORE_RAYCAST_LAYER = 2;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _renderers = GetComponentsInChildren<Renderer>();
         _rigidbody = GetComponent<Rigidbody>();
@@ -49,54 +44,9 @@ public class Pickupable : MonoBehaviour
         _originalLayer = gameObject.layer;
         _propertyBlock = new MaterialPropertyBlock();
 
-        DisableOcclusionCulling();
-        ExpandRendererBounds();
         CalculateVisualCenterOffset();
-        EnsureDoubleSidedTransparency();
     }
 
-    /// <summary>
-    /// Prevents baked occlusion culling data from incorrectly hiding this object.
-    /// Required for any dynamic/pickupable object that was previously marked Static.
-    /// </summary>
-    private void DisableOcclusionCulling()
-    {
-        foreach (Renderer r in _renderers)
-        {
-            if (r != null)
-                r.allowOcclusionWhenDynamic = false;
-        }
-    }
-
-    /// <summary>
-    /// Expands each renderer's local bounds once at startup to prevent frustum culling
-    /// from hiding sub-meshes whose individual bounds are too small. This avoids the
-    /// "Invalid AABB aabb" errors caused by forcibly overwriting bounds every frame.
-    /// </summary>
-    private void ExpandRendererBounds()
-    {
-        if (_renderers == null) return;
-
-        for (int i = 0; i < _renderers.Length; i++)
-        {
-            Renderer r = _renderers[i];
-            if (r == null) continue;
-
-            Bounds local = r.localBounds;
-            // Only expand if the bounds are valid (non-zero size and finite)
-            Vector3 size = local.size;
-            if (size.sqrMagnitude < 0.0001f || !float.IsFinite(size.x) || !float.IsFinite(size.y) || !float.IsFinite(size.z))
-                continue;
-
-            local.Expand(size * boundsExpansionFactor);
-            
-            // Final safety check before applying
-            if (float.IsFinite(local.center.x) && float.IsFinite(local.size.x))
-            {
-                r.localBounds = local;
-            }
-        }
-    }
 
     /// <summary>Calculates the offset from transform origin to the combined visual center.</summary>
     private void CalculateVisualCenterOffset()
@@ -159,45 +109,6 @@ public class Pickupable : MonoBehaviour
         return transform.TransformPoint(VisualCenterOffset);
     }
 
-    /// <summary>Makes all transparent materials double-sided for correct glass rendering.
-    /// Uses sharedMaterials to avoid creating material instances when no change is needed.</summary>
-    private void EnsureDoubleSidedTransparency()
-    {
-        for (int ri = 0; ri < _renderers.Length; ri++)
-        {
-            Renderer r = _renderers[ri];
-            if (r == null) continue;
-
-            Material[] sharedMats = r.sharedMaterials;
-            bool needsInstances = false;
-
-            // First pass: check if any material needs modification
-            for (int i = 0; i < sharedMats.Length; i++)
-            {
-                Material mat = sharedMats[i];
-                if (mat != null && mat.HasFloat(SurfaceId) && mat.GetFloat(SurfaceId) >= 1f
-                    && mat.HasFloat(CullId) && mat.GetFloat(CullId) != 0f)
-                {
-                    needsInstances = true;
-                    break;
-                }
-            }
-
-            if (!needsInstances) continue;
-
-            // Second pass: create instances only when needed
-            Material[] mats = r.materials;
-            for (int i = 0; i < mats.Length; i++)
-            {
-                Material mat = mats[i];
-                if (mat.HasFloat(SurfaceId) && mat.GetFloat(SurfaceId) >= 1f)
-                {
-                    mat.SetFloat(CullId, 0f);
-                }
-            }
-            r.materials = mats;
-        }
-    }
 
     /// <summary>Toggles emission highlight on all child renderers.
     /// Uses MaterialPropertyBlock for color so no material instances are created per-call.
@@ -212,7 +123,7 @@ public class Pickupable : MonoBehaviour
         // Create instanced materials only once to toggle the _EMISSION keyword.
         // r.materials returns NEW copies each call, so we trigger it once and let
         // Unity cache the instances on the renderer for subsequent accesses via sharedMaterials.
-        if (!_hasInstancedMaterials)
+        if (!_hasInstancedMaterials && _renderers != null)
         {
             _hasInstancedMaterials = true;
             for (int i = 0; i < _renderers.Length; i++)
@@ -228,16 +139,32 @@ public class Pickupable : MonoBehaviour
                     Material mat = mats[m];
                     if (mat != null && mat.HasProperty(EmissionColorId))
                     {
-                        mat.EnableKeyword("_EMISSION");
+                        // Initially enable if we're highlighting, or keep it off
+                        if (enabled) mat.EnableKeyword("_EMISSION");
                     }
                 }
             }
         }
 
+        if (_renderers == null) return;
+
         for (int i = 0; i < _renderers.Length; i++)
         {
             Renderer r = _renderers[i];
             if (r == null) continue;
+
+            // Toggle keyword on material instances if they exist
+            if (_hasInstancedMaterials)
+            {
+                foreach (Material m in r.sharedMaterials)
+                {
+                    if (m != null && m.HasProperty(EmissionColorId))
+                    {
+                        if (enabled) m.EnableKeyword("_EMISSION");
+                        else m.DisableKeyword("_EMISSION");
+                    }
+                }
+            }
 
             // Set emission color via property block — zero allocation.
             _propertyBlock.Clear();
@@ -252,6 +179,9 @@ public class Pickupable : MonoBehaviour
     {
         IsHeld = true;
         _originalLayer = gameObject.layer;
+
+        // Ensure highlight is off when picked up
+        SetHighlight(false);
 
         // Freeze physics (order matters: clear velocity BEFORE setting kinematic)
         if (_rigidbody != null)

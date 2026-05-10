@@ -18,14 +18,28 @@ public class AxeWeapon : MonoBehaviour
     [Tooltip("Minimum seconds between swings (prevents damage spam on held click).")]
     public float swingCooldown = 0.6f;
 
+    [Header("Visual Feedback")]
+    [Tooltip("Procedural swing rotation offset (euler).")]
+    public Vector3 swingRotationOffset = new Vector3(45f, 0f, 0f);
+    public float swingDuration = 0.2f;
+
     private float _lastSwingTime = -999f;
     private bool _isEnabled = false;
+    private Quaternion _originalLocalRot;
+    private bool _isSwinging = false;
 
     /// <summary>Called by AxePickup to activate the weapon.</summary>
     public void Enable()
     {
         _isEnabled = true;
         enabled = true;
+        
+        // Find the axe object attached to the hand to get its original rotation
+        AxePickup axe = GetComponentInChildren<AxePickup>();
+        if (axe != null)
+        {
+            _originalLocalRot = axe.transform.localRotation;
+        }
     }
 
     private void Awake()
@@ -39,7 +53,7 @@ public class AxeWeapon : MonoBehaviour
         if (!_isEnabled) return;
         if (Mouse.current == null) return;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !_isSwinging)
         {
             TrySwing();
         }
@@ -58,6 +72,7 @@ public class AxeWeapon : MonoBehaviour
         }
 
         _lastSwingTime = Time.time;
+        StartCoroutine(SwingRoutine());
 
         // Find the active ghost by its HealthComponent + GhostHealthController
         GhostHealthController ghost = FindNearestGhost();
@@ -83,6 +98,43 @@ public class AxeWeapon : MonoBehaviour
 
         ghostHealth.TakeDamage(DamagePerSwing);
         Debug.Log($"[AxeWeapon] Hit ghost for {DamagePerSwing} damage. Ghost HP: {ghostHealth.CurrentHealth}");
+    }
+
+    private System.Collections.IEnumerator SwingRoutine()
+    {
+        _isSwinging = true;
+        AxePickup axe = GetComponentInChildren<AxePickup>();
+        if (axe == null)
+        {
+            _isSwinging = false;
+            yield break;
+        }
+
+        Transform axeTransform = axe.transform;
+        Quaternion targetRot = _originalLocalRot * Quaternion.Euler(swingRotationOffset);
+
+        // Swing forward
+        float elapsed = 0f;
+        while (elapsed < swingDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / swingDuration;
+            axeTransform.localRotation = Quaternion.Slerp(_originalLocalRot, targetRot, t);
+            yield return null;
+        }
+
+        // Return back
+        elapsed = 0f;
+        while (elapsed < swingDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / swingDuration;
+            axeTransform.localRotation = Quaternion.Slerp(targetRot, _originalLocalRot, t);
+            yield return null;
+        }
+
+        axeTransform.localRotation = _originalLocalRot;
+        _isSwinging = false;
     }
 
     /// <summary>Returns the nearest living GhostHealthController in the scene, or null if none.</summary>

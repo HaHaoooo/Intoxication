@@ -44,12 +44,28 @@ public class KidGhostMover : MonoBehaviour
     {
         if (_playerTransform == null) return;
 
-        Vector3 toPlayer = _playerTransform.position - transform.position;
+        Vector3 playerPos = _playerTransform.position;
+        Vector3 myPos = transform.position;
+
+        if (!float.IsFinite(playerPos.x) || !float.IsFinite(playerPos.y) || !float.IsFinite(playerPos.z) ||
+            !float.IsFinite(myPos.x) || !float.IsFinite(myPos.y) || !float.IsFinite(myPos.z))
+        {
+            return;
+        }
+
+        Vector3 toPlayer = playerPos - myPos;
         float distance = toPlayer.magnitude;
 
         // Move toward the player
-        if (distance > 0.0001f)
-            transform.position += toPlayer.normalized * (moveSpeed * Time.deltaTime);
+        float dt = Time.deltaTime;
+        if (distance > 0.0001f && float.IsFinite(dt) && dt > 0)
+        {
+            float step = moveSpeed * dt;
+            if (float.IsFinite(step) && step > 0)
+            {
+                transform.position += toPlayer.normalized * step;
+            }
+        }
 
         // Head always tracks the player on the horizontal plane
         Vector3 flatDirection = new Vector3(toPlayer.x, 0f, toPlayer.z);

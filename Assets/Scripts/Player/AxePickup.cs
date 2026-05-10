@@ -1,20 +1,12 @@
 using System.Collections;
 using UnityEngine;
-using Player;
 
 /// <summary>
 /// Placed on the world Axe GameObject.
-/// Automatically creates an interaction collider on the visible mesh child at startup —
-/// no manual BoxCollider setup required.
-/// When the player presses F, the axe disappears from the world,
-/// attaches to the player's right hand bone, enables the AxeWeapon component,
-/// and plays a short internal monologue via DialogueUI.
+/// Now inherits from Pickupable so it can be handled by PlayerPickupController.
 /// </summary>
-public class AxePickup : MonoBehaviour, IInteractable
+public class AxePickup : Pickupable
 {
-    private const string PromptText = "[ F ] Pick up axe";
-    private const float AutoColliderRadius = 1.5f;
-
     private static readonly DialogueData.Line[] PickupMonologue = new[]
     {
         new DialogueData.Line { speaker = "You", text = "An axe..." },
@@ -23,11 +15,8 @@ public class AxePickup : MonoBehaviour, IInteractable
         new DialogueData.Line { speaker = "You", text = "But I don't think I have a choice." },
     };
 
-    [Header("References")]
-    [Tooltip("The player GameObject that has an AxeWeapon component.")]
-    public GameObject playerObject;
-
-    [Tooltip("The bone transform where the axe will be parented (e.g. hand.R). Auto-detected if empty.")]
+    [Header("Axe Settings")]
+    [Tooltip("The bone transform where the axe will be parented (e.g. hand.R).")]
     public Transform handBone;
 
     [Header("Hold Transform")]
@@ -38,98 +27,114 @@ public class AxePickup : MonoBehaviour, IInteractable
     public Vector3 holdLocalRotation = new Vector3(0f, 0f, 0f);
 
     [Tooltip("Local scale applied to the axe once it is in the hand (use to resize if needed).")]
-    public Vector3 holdLocalScale = new Vector3(1f, 1f, 1f);
+    public Vector3 holdLocalScale = new Vector3(0.2f, 0.2f, 0.2f);
 
-    private bool _pickedUp = false;
-
-    private void Awake()
+    protected virtual void Awake()
     {
-        EnsureInteractionCollider();
+        base.Awake();
+        // If the user hasn't changed it from 1,1,1, use the current scale
+        if (holdLocalScale == Vector3.one)
+        {
+            holdLocalScale = transform.localScale;
+        }
     }
 
     /// <summary>
-    /// Adds a SphereCollider on the mesh child (or self as fallback) if no
-    /// non-trigger collider already exists anywhere in the hierarchy.
-    /// This means you never need to add a BoxCollider manually.
+    /// Special pickup logic for the axe, called by PlayerPickupController.
+    /// Parents the axe to the player's hand and enables AxeWeapon.
     /// </summary>
-    private void EnsureInteractionCollider()
+    public void OnAxePickedUp(GameObject player)
     {
-        // If a solid (non-trigger) collider already exists anywhere, keep it
-        foreach (Collider existing in GetComponentsInChildren<Collider>(includeInactive: true))
+        // 1. Safety: If handBone is not assigned, try to find a suitable one on the player
+        if (handBone == null)
         {
-            if (!existing.isTrigger)
-                return;
-        }
-
-        // Find the mesh renderer child — that's where the visible geometry lives
-        Renderer meshRend = GetComponentInChildren<Renderer>(includeInactive: true);
-        GameObject target = meshRend != null ? meshRend.gameObject : gameObject;
-
-        SphereCollider sphere = target.AddComponent<SphereCollider>();
-        sphere.isTrigger = false;
-        sphere.radius = AutoColliderRadius;
-        Debug.Log($"[AxePickup] Auto-created SphereCollider (r={AutoColliderRadius}) on '{target.name}'.");
-    }
-
-    // --- IInteractable ---
-
-    /// <summary>Returns the interaction prompt shown above the axe.</summary>
-    public string GetInteractionPrompt() => PromptText;
-
-    /// <summary>Only interactable once — before the player picks it up.</summary>
-    public bool CanInteract() => !_pickedUp;
-
-    /// <summary>Attaches the axe to the player's hand and enables the weapon component.</summary>
-    public void OnInteract()
-    {
-        if (_pickedUp) return;
-        _pickedUp = true;
-
-        // Resolve the player if not manually assigned
-        if (playerObject == null)
-        {
-            PlayerMovement pm = FindAnyObjectByType<PlayerMovement>();
-            if (pm != null) playerObject = pm.gameObject;
-        }
-
-        if (playerObject == null)
-        {
-            Debug.LogWarning("[AxePickup] playerObject not found — cannot attach axe.");
-            return;
-        }
-
-        // Resolve hand bone if not manually assigned
-        Transform attachTo = handBone;
-        if (attachTo == null)
-        {
-            attachTo = FindBoneByName(playerObject.transform, "hand.R");
-            if (attachTo == null) attachTo = FindBoneByName(playerObject.transform, "hand_r");
-            if (attachTo == null) attachTo = FindBoneByName(playerObject.transform, "RightHand");
-            if (attachTo == null)
+            Debug.LogWarning($"[AxePickup] handBone was not assigned on {name}. Searching player hierarchy...");
+            // Try to find a right hand bone specifically, or just any 'hand'
+            handBone = FindBoneByName(player.transform, "hand.r") ?? FindBoneByName(player.transform, "hand");
+            
+            if (handBone == null)
             {
-                Debug.LogWarning("[AxePickup] Right hand bone not found — attaching to player root.");
-                attachTo = playerObject.transform;
+                Debug.LogError("[AxePickup] Could not find a 'hand' bone. Defaulting to player root.");
+                handBone = player.transform;
             }
         }
 
-        // Disable all colliders so the prompt disappears and physics ignore it
-        foreach (Collider col in GetComponentsInChildren<Collider>(includeInactive: true))
-            col.enabled = false;
-
-        // Parent axe to the hand bone
-        transform.SetParent(attachTo, worldPositionStays: false);
+        // 2. Parent axe to the hand bone
+        transform.SetParent(handBone, worldPositionStays: false);
         transform.localPosition = holdLocalPosition;
         transform.localEulerAngles = holdLocalRotation;
+        
+        // 3. Force the scale
         transform.localScale = holdLocalScale;
+        
+        string boneName = handBone != null ? handBone.name : "null";
+        Vector3 boneScale = handBone != null ? handBone.localScale : Vector3.one;
+        Debug.Log($"[AxePickup] Applied hold scale: {holdLocalScale}. Attached to: {boneName} (Scale: {boneScale})");
 
-        // Enable the weapon system on the player
-        AxeWeapon weapon = playerObject.GetComponent<AxeWeapon>();
-        if (weapon == null) weapon = playerObject.AddComponent<AxeWeapon>();
+        // 4. Thoroughly remove "strong light" and any emission
+        CleanupAllLighting();
+
+        // 5. Enable the weapon system on the player
+        AxeWeapon weapon = player.GetComponent<AxeWeapon>();
+        if (weapon == null) weapon = player.AddComponent<AxeWeapon>();
         weapon.Enable();
 
-        // Play pickup monologue, then update objective
+        // 6. Play pickup monologue, then update objective
         StartCoroutine(PlayMonologueThenObjective());
         Debug.Log("[AxePickup] Axe picked up and attached to hand.");
+    }
+
+    private Transform FindBoneByName(Transform parent, string nameSnippet)
+    {
+        if (parent.name.ToLower().Contains(nameSnippet.ToLower())) return parent;
+        foreach (Transform child in parent)
+        {
+            Transform found = FindBoneByName(child, nameSnippet);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private void CleanupAllLighting()
+    {
+        // 1. Remove all Light components
+        Light[] lights = GetComponentsInChildren<Light>(true);
+        foreach (Light l in lights)
+        {
+            l.enabled = false;
+            Debug.Log($"[AxePickup] Destroying light component on {l.gameObject.name}");
+            Destroy(l);
+        }
+
+        // 2. Remove Reflection Probes which can cause bright highlights
+        ReflectionProbe[] probes = GetComponentsInChildren<ReflectionProbe>(true);
+        foreach (ReflectionProbe p in probes)
+        {
+            p.enabled = false;
+            Destroy(p);
+        }
+
+        // 3. Force-disable Emission on all renderers
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer r in renderers)
+        {
+            // Use property block to black out emission
+            MaterialPropertyBlock prop = new MaterialPropertyBlock();
+            r.GetPropertyBlock(prop);
+            prop.SetColor("_EmissionColor", Color.black);
+            r.SetPropertyBlock(prop);
+
+            // Also try to disable the keyword on the shared materials to be sure
+            foreach (Material m in r.sharedMaterials)
+            {
+                if (m != null)
+                {
+                    m.DisableKeyword("_EMISSION");
+                    if (m.HasProperty("_EmissionColor"))
+                        m.SetColor("_EmissionColor", Color.black);
+                }
+            }
+        }
     }
 
     private IEnumerator PlayMonologueThenObjective()
@@ -151,19 +156,4 @@ public class AxePickup : MonoBehaviour, IInteractable
         ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
     }
 
-    // --- Helpers ---
-
-    /// <summary>Recursively searches for a bone by name (case-insensitive).</summary>
-    private static Transform FindBoneByName(Transform root, string boneName)
-    {
-        if (root.name.Equals(boneName, System.StringComparison.OrdinalIgnoreCase))
-            return root;
-
-        foreach (Transform child in root)
-        {
-            Transform result = FindBoneByName(child, boneName);
-            if (result != null) return result;
-        }
-        return null;
-    }
 }

@@ -190,7 +190,10 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
         {
             elapsed += Time.unscaledDeltaTime;
             float alpha = Mathf.Clamp01(1f - elapsed / girlFadeOutDuration);
-            SetRenderersAlpha(girlRenderers, alpha);
+            if (float.IsFinite(alpha))
+            {
+                SetRenderersAlpha(girlRenderers, alpha);
+            }
             yield return null;
         }
 
@@ -203,7 +206,10 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
         {
             elapsed += Time.unscaledDeltaTime;
             float alpha = Mathf.Clamp01(elapsed / ghostFadeInDuration);
-            SetRenderersAlpha(ghostRenderers, alpha);
+            if (float.IsFinite(alpha))
+            {
+                SetRenderersAlpha(ghostRenderers, alpha);
+            }
             yield return null;
         }
 
@@ -241,13 +247,6 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
 
         HealthComponent ghostHealth = ghost.AddComponent<HealthComponent>();
         ghost.AddComponent<GhostHealthController>();
-
-        // Show combat health bars
-        if (CombatHealthBarUI.Instance != null && playerTransform != null)
-        {
-            HealthComponent playerHealth = playerTransform.GetComponent<HealthComponent>();
-            CombatHealthBarUI.Instance.Show(playerHealth, ghostHealth);
-        }
 
         // Set fully transparent if fading in
         if (startInvisible)

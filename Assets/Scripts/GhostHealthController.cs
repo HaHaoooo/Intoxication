@@ -30,9 +30,6 @@ public class GhostHealthController : MonoBehaviour
 
     private void HandleDeath()
     {
-        // Hide health bars immediately
-        CombatHealthBarUI.Instance?.Hide();
-
         // Destroy this ghost then run the dialogue sequence on a persistent host
         Destroy(gameObject);
 
