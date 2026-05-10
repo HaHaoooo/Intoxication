@@ -20,12 +20,14 @@ public class AxeWeapon : MonoBehaviour
 
     [Header("Visual Feedback")]
     [Tooltip("Procedural swing rotation offset (euler).")]
-    public Vector3 swingRotationOffset = new Vector3(45f, 0f, 0f);
-    public float swingDuration = 0.2f;
+    public Vector3 swingRotationOffset = new Vector3(30f, -40f, 20f);
+    public float swingDuration = 0.15f;
+    public float returnDuration = 0.3f;
 
     private float _lastSwingTime = -999f;
     private bool _isEnabled = false;
     private Quaternion _originalLocalRot;
+    private Vector3 _originalLocalPos;
     private bool _isSwinging = false;
 
     /// <summary>Called by AxePickup to activate the weapon.</summary>
@@ -39,6 +41,7 @@ public class AxeWeapon : MonoBehaviour
         if (axe != null)
         {
             _originalLocalRot = axe.transform.localRotation;
+            _originalLocalPos = axe.transform.localPosition;
         }
     }
 
@@ -51,9 +54,13 @@ public class AxeWeapon : MonoBehaviour
     private void Update()
     {
         if (!_isEnabled) return;
-        if (Mouse.current == null) return;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !_isSwinging)
+        // Use new input system polling for consistency or the Attack action if preferred
+        bool attackPressed = false;
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            attackPressed = true;
+        
+        if (attackPressed && !_isSwinging)
         {
             TrySwing();
         }
@@ -67,7 +74,6 @@ public class AxeWeapon : MonoBehaviour
     {
         if (Time.time - _lastSwingTime < swingCooldown)
         {
-            Debug.Log("[AxeWeapon] Swing on cooldown.");
             return;
         }
 
@@ -76,29 +82,24 @@ public class AxeWeapon : MonoBehaviour
 
         // Find the active ghost by its HealthComponent + GhostHealthController
         GhostHealthController ghost = FindNearestGhost();
-        if (ghost == null)
-        {
-            Debug.Log("[AxeWeapon] Swung but no ghost in range.");
-            return;
-        }
+        if (ghost == null) return;
 
         float distance = Vector3.Distance(transform.position, ghost.transform.position);
-        if (distance > swingRange)
-        {
-            Debug.Log($"[AxeWeapon] Swung — ghost too far ({distance:F2} > {swingRange}).");
-            return;
-        }
+        if (distance > swingRange) return;
 
         HealthComponent ghostHealth = ghost.GetComponent<HealthComponent>();
-        if (ghostHealth == null || !ghostHealth.IsAlive)
-        {
-            Debug.Log("[AxeWeapon] Ghost has no health or is already dead.");
-            return;
-        }
+        if (ghostHealth == null || !ghostHealth.IsAlive) return;
 
         ghostHealth.TakeDamage(DamagePerSwing);
         Debug.Log($"[AxeWeapon] Hit ghost for {DamagePerSwing} damage. Ghost HP: {ghostHealth.CurrentHealth}");
-    }
+
+        // Apply knockback to the ghost mover if it exists
+        KidGhostMover mover = ghost.GetComponent<KidGhostMover>();
+        if (mover != null)
+        {
+            mover.ApplyKnockback(transform.position, 1.5f);
+        }
+        }
 
     private System.Collections.IEnumerator SwingRoutine()
     {
@@ -112,28 +113,35 @@ public class AxeWeapon : MonoBehaviour
 
         Transform axeTransform = axe.transform;
         Quaternion targetRot = _originalLocalRot * Quaternion.Euler(swingRotationOffset);
+        Vector3 targetPos = _originalLocalPos + new Vector3(0.1f, -0.1f, 0.2f); // Slight thrust forward
 
-        // Swing forward
+        // Swing forward (fast)
         float elapsed = 0f;
         while (elapsed < swingDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / swingDuration;
-            axeTransform.localRotation = Quaternion.Slerp(_originalLocalRot, targetRot, t);
+            // Use an easing curve for "snap"
+            float easedT = t * t * (3f - 2f * t); 
+            axeTransform.localRotation = Quaternion.Slerp(_originalLocalRot, targetRot, easedT);
+            axeTransform.localPosition = Vector3.Lerp(_originalLocalPos, targetPos, easedT);
             yield return null;
         }
 
-        // Return back
+        // Return back (slower)
         elapsed = 0f;
-        while (elapsed < swingDuration)
+        while (elapsed < returnDuration)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / swingDuration;
-            axeTransform.localRotation = Quaternion.Slerp(targetRot, _originalLocalRot, t);
+            float t = elapsed / returnDuration;
+            float easedT = t * t * (3f - 2f * t);
+            axeTransform.localRotation = Quaternion.Slerp(targetRot, _originalLocalRot, easedT);
+            axeTransform.localPosition = Vector3.Lerp(targetPos, _originalLocalPos, easedT);
             yield return null;
         }
 
         axeTransform.localRotation = _originalLocalRot;
+        axeTransform.localPosition = _originalLocalPos;
         _isSwinging = false;
     }
 

@@ -7,12 +7,8 @@ using UnityEngine;
 /// </summary>
 public class ExaminableClue : MonoBehaviour, IInteractable
 {
-    [Header("Prompt")]
-    [Tooltip("Text shown on the interaction prompt (e.g. '[ F ] Examine').")]
-    [SerializeField] private string prompt = "[ F ] Examine";
-
     [Header("Clue Text")]
-    [Tooltip("The environmental description shown when examined (e.g. 'A torn child's drawing lies on the ground.').")]
+[Tooltip("The environmental description shown when examined (e.g. 'A torn child's drawing lies on the ground.').")]
     [SerializeField] private string clueDescription = "";
 
     [Header("Monologue")]
@@ -34,11 +30,11 @@ public class ExaminableClue : MonoBehaviour, IInteractable
         _dialogueUI = DialogueUI.Instance;
     }
 
-    /// <summary>Returns the interaction prompt shown when the player looks at this clue.</summary>
-    public string GetInteractionPrompt() => prompt;
+    public string GetActionName() => "Examine";
+    public InteractionKey GetPreferredKey() => InteractionKey.F;
 
     /// <summary>Whether this clue can still be examined.</summary>
-    public bool CanInteract() => !(oneTimeOnly && _hasBeenRead);
+public bool CanInteract() => !(oneTimeOnly && _hasBeenRead);
 
     /// <summary>Shows the clue text (and optional monologue) via DialogueUI.</summary>
     public void OnInteract()

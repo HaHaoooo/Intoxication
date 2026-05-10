@@ -1,0 +1,12 @@
+{
+    "asset": "37b2e69966b7049ca87c3ca45aedc34a",
+    "fileName": "019e13fd-a425-7941-ba3b-cf6527725e0a.pose.json",
+    "prompt": "Humanoid run cycle. No standing start, no wind-up. Starts immediately from a full running stride. Loopable, constant high speed. Ordinary athletic run.",
+    "negativePrompt": "",
+    "model": "unity-text-to-motion",
+    "modelName": "Text to Motion",
+    "customSeed": 1206046312,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "isTrimmed": false
+}

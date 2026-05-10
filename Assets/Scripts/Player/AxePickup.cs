@@ -7,14 +7,6 @@ using UnityEngine;
 /// </summary>
 public class AxePickup : Pickupable
 {
-    private static readonly DialogueData.Line[] PickupMonologue = new[]
-    {
-        new DialogueData.Line { speaker = "You", text = "An axe..." },
-        new DialogueData.Line { speaker = "You", text = "That bartender said anything could become a weapon." },
-        new DialogueData.Line { speaker = "You", text = "I shouldn't touch this." },
-        new DialogueData.Line { speaker = "You", text = "But I don't think I have a choice." },
-    };
-
     [Header("Axe Settings")]
     [Tooltip("The bone transform where the axe will be parented (e.g. hand.R).")]
     public Transform handBone;
@@ -29,7 +21,7 @@ public class AxePickup : Pickupable
     [Tooltip("Local scale applied to the axe once it is in the hand (use to resize if needed).")]
     public Vector3 holdLocalScale = new Vector3(0.2f, 0.2f, 0.2f);
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
         base.Awake();
         // If the user hasn't changed it from 1,1,1, use the current scale
@@ -49,24 +41,45 @@ public class AxePickup : Pickupable
         if (handBone == null)
         {
             Debug.LogWarning($"[AxePickup] handBone was not assigned on {name}. Searching player hierarchy...");
-            // Try to find a right hand bone specifically, or just any 'hand'
-            handBone = FindBoneByName(player.transform, "hand.r") ?? FindBoneByName(player.transform, "hand");
+            
+            // Try to find HoldPoint first, as requested
+            handBone = FindBoneByName(player.transform, "HoldPoint");
             
             if (handBone == null)
             {
-                Debug.LogError("[AxePickup] Could not find a 'hand' bone. Defaulting to player root.");
+                // Try to find a right hand bone specifically, or just any 'hand'
+                handBone = FindBoneByName(player.transform, "hand.r") ?? FindBoneByName(player.transform, "hand");
+            }
+            
+            if (handBone == null)
+            {
+                Debug.LogError("[AxePickup] Could not find a 'hand' bone or 'HoldPoint'. Defaulting to player root.");
                 handBone = player.transform;
+            }
+        }
+
+        // 1b. Extra safety: Ensure Rigidbody is kinematic and has no velocity
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            if (rb.linearVelocity.sqrMagnitude > 0 || rb.angularVelocity.sqrMagnitude > 0)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
 
         // 2. Parent axe to the hand bone
         transform.SetParent(handBone, worldPositionStays: false);
+        
         transform.localPosition = holdLocalPosition;
         transform.localEulerAngles = holdLocalRotation;
         
         // 3. Force the scale
         transform.localScale = holdLocalScale;
-        
+
         string boneName = handBone != null ? handBone.name : "null";
         Vector3 boneScale = handBone != null ? handBone.localScale : Vector3.one;
         Debug.Log($"[AxePickup] Applied hold scale: {holdLocalScale}. Attached to: {boneName} (Scale: {boneScale})");
@@ -79,8 +92,9 @@ public class AxePickup : Pickupable
         if (weapon == null) weapon = player.AddComponent<AxeWeapon>();
         weapon.Enable();
 
-        // 6. Play pickup monologue, then update objective
-        StartCoroutine(PlayMonologueThenObjective());
+        // 6. Update objective directly
+        ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
+        
         Debug.Log("[AxePickup] Axe picked up and attached to hand.");
     }
 
@@ -97,16 +111,13 @@ public class AxePickup : Pickupable
 
     private void CleanupAllLighting()
     {
-        // 1. Remove all Light components
         Light[] lights = GetComponentsInChildren<Light>(true);
         foreach (Light l in lights)
         {
             l.enabled = false;
-            Debug.Log($"[AxePickup] Destroying light component on {l.gameObject.name}");
             Destroy(l);
         }
 
-        // 2. Remove Reflection Probes which can cause bright highlights
         ReflectionProbe[] probes = GetComponentsInChildren<ReflectionProbe>(true);
         foreach (ReflectionProbe p in probes)
         {
@@ -114,17 +125,14 @@ public class AxePickup : Pickupable
             Destroy(p);
         }
 
-        // 3. Force-disable Emission on all renderers
         Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
         foreach (Renderer r in renderers)
         {
-            // Use property block to black out emission
             MaterialPropertyBlock prop = new MaterialPropertyBlock();
             r.GetPropertyBlock(prop);
             prop.SetColor("_EmissionColor", Color.black);
             r.SetPropertyBlock(prop);
 
-            // Also try to disable the keyword on the shared materials to be sure
             foreach (Material m in r.sharedMaterials)
             {
                 if (m != null)
@@ -136,24 +144,4 @@ public class AxePickup : Pickupable
             }
         }
     }
-
-    private IEnumerator PlayMonologueThenObjective()
-    {
-        DialogueUI ui = DialogueUI.Instance;
-        if (ui != null)
-        {
-            bool done = false;
-            DialogueData data = ScriptableObject.CreateInstance<DialogueData>();
-            data.lines = PickupMonologue;
-
-            ui.OnDialogueEnded += OnMonologueDone;
-            ui.StartDialogue(data);
-
-            void OnMonologueDone() { done = true; ui.OnDialogueEnded -= OnMonologueDone; }
-            yield return new WaitUntil(() => done);
-        }
-
-        ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
-    }
-
 }

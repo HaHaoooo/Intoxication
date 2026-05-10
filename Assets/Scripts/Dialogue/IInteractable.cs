@@ -1,11 +1,19 @@
+public enum InteractionKey
+{
+    E,
+    F
+}
+
 /// <summary>
-/// Interface for objects the player can interact with via the F key.
-/// Implement on any NPC or interactive object that responds to player proximity + input.
+/// Interface for objects the player can interact with.
 /// </summary>
 public interface IInteractable
 {
-    /// <summary>Returns the prompt text shown to the player (e.g. "[ F ] Talk").</summary>
-    string GetInteractionPrompt();
+    /// <summary>Returns the action name (e.g. "Talk", "Pick Up").</summary>
+    string GetActionName();
+
+    /// <summary>Returns the preferred key for this interaction.</summary>
+    InteractionKey GetPreferredKey();
 
     /// <summary>Called when the player triggers the interaction.</summary>
     void OnInteract();

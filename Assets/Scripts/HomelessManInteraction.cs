@@ -43,11 +43,11 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable
         }
     }
 
-    /// <summary>Returns the prompt text displayed when the player aims at the homeless man.</summary>
-    public string GetInteractionPrompt() => "[ F ] Talk";
+    public string GetActionName() => "Talk";
+    public InteractionKey GetPreferredKey() => InteractionKey.F;
 
     /// <summary>Whether the homeless man is available for interaction.</summary>
-    public bool CanInteract()
+public bool CanInteract()
     {
         if (_isInDialogue) return false;
         if (oneTimeOnly && _hasInteracted) return false;

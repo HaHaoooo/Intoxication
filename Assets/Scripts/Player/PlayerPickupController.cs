@@ -15,10 +15,6 @@ public class PlayerPickupController : MonoBehaviour
     [SerializeField] private Vector3 firstPersonHoldOffset = new Vector3(0.3f, -0.35f, 1.0f);
     [SerializeField] private Vector3 thirdPersonHoldOffset = new Vector3(0.4f, 1.2f, 0.6f);
 
-    [Header("Detection")]
-    [SerializeField] private float pickupDistance = 4f;
-    [SerializeField] private float sphereCastRadius = 0.08f;
-
     [Header("Hold & Throw")]
     [SerializeField] private float throwForce = 15f;
     [SerializeField] private float holdSmoothSpeed = 15f;
@@ -50,11 +46,8 @@ public class PlayerPickupController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float throwVolume = 0.4f;
     [SerializeField, Range(0f, 1f)] private float drinkVolume = 0.6f;
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugRay = true;
-
     /// <summary>True when holding a drinkable item; blocks F-key camera toggle.</summary>
-    public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && !_isDrinking;
+public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && !_isDrinking;
 
     /// <summary>True while the procedural drinking action is playing.</summary>
     public bool IsDrinking => _isDrinking;
@@ -138,12 +131,7 @@ public class PlayerPickupController : MonoBehaviour
     {
         UpdateHoldPointParent();
 
-        // Guard against externally destroyed references (e.g. scene transitions, other systems).
-        if (_hoveredItem != null && !_hoveredItem)
-        {
-            _hoveredItem = null;
-            SetCrosshairColor(_defaultCrosshairColor);
-        }
+        // Guard against externally destroyed references
         if (_heldItem != null && !_heldItem)
         {
             _heldItem = null;
@@ -163,12 +151,8 @@ public class PlayerPickupController : MonoBehaviour
             return;
         }
 
-        if (_heldItem == null)
-        {
-            DetectTarget();
-        }
-
-        ProcessInput();
+        // Handle Drop/Throw/Drink input if holding something
+        HandleHeldActions();
 
         if (_heldItem != null)
         {
@@ -178,11 +162,46 @@ public class PlayerPickupController : MonoBehaviour
         UpdateDrinkPromptUI();
     }
 
+    private void HandleHeldActions()
+    {
+        if (_heldItem == null || _isDrinking) return;
+        if (_interactCooldownTimer > 0f)
+        {
+            _interactCooldownTimer -= Time.deltaTime;
+            return;
+        }
+
+        Keyboard kb = Keyboard.current;
+        Mouse ms = Mouse.current;
+        if (kb == null || ms == null) return;
+
+        // E to drop
+        if (kb.eKey.wasPressedThisFrame)
+        {
+            Drop();
+            _interactCooldownTimer = INTERACT_COOLDOWN;
+        }
+        // RMB to throw
+        else if (ms.rightButton.wasPressedThisFrame)
+        {
+            Throw();
+            _interactCooldownTimer = INTERACT_COOLDOWN;
+        }
+        // F to drink
+        else if (kb.fKey.wasPressedThisFrame && _heldItem.IsDrinkable)
+        {
+            StartDrinking();
+        }
+    }
+
+    // ──────────────────────────── Hold Point ────────────────────────────
+
     private void LateUpdate()
     {
         ExecutePendingReparent();
 
-        if (_heldItem != null && !_isDrinking)
+        // Skip smooth follow for Axe as it is parented and managed by AxePickup/AxeWeapon
+        if (_heldItem != null && !_isDrinking && !(_heldItem is AxePickup))
         {
             SmoothFollowHoldPoint();
         }
@@ -241,125 +260,23 @@ public class PlayerPickupController : MonoBehaviour
         }
     }
 
-    // ──────────────────────────── Detection ────────────────────────────
-
-    /// <summary>Casts a ray from screen center to find the closest Pickupable.</summary>
-    private void DetectTarget()
-    {
-        if (_mainCam == null) return;
-
-        Ray ray = _mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-        if (showDebugRay)
-            Debug.DrawRay(ray.origin, ray.direction * pickupDistance, Color.cyan);
-
-        int hitCount = Physics.SphereCastNonAlloc(
-            ray, sphereCastRadius, _hitBuffer, pickupDistance, _detectLayerMask, QueryTriggerInteraction.Ignore
-        );
-
-        Pickupable closest = FindClosestPickupable(hitCount);
-
-        if (closest != null)
-        {
-            if (_hoveredItem != closest)
-            {
-                ClearHover();
-                _hoveredItem = closest;
-                _hoveredItem.SetHighlight(true);
-                SetCrosshairColor(hoverColor);
-            }
-        }
-        else if (_hoveredItem != null)
-        {
-            ClearHover();
-        }
-    }
-
-    /// <summary>Finds the closest Pickupable from the hit buffer.</summary>
-    private Pickupable FindClosestPickupable(int hitCount)
-    {
-        if (hitCount == 0) return null;
-
-        Pickupable bestCandidate = null;
-        float bestDistance = float.MaxValue;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            RaycastHit hit = _hitBuffer[i];
-
-            // Retrieve component first; try local collider then parent to avoid heavy search.
-            if (!hit.collider.TryGetComponent<Pickupable>(out var candidate))
-            {
-                candidate = hit.collider.GetComponentInParent<Pickupable>();
-            }
-
-            if (candidate == null || candidate.IsHeld) continue;
-
-            if (hit.distance < bestDistance)
-            {
-                bestCandidate = candidate;
-                bestDistance = hit.distance;
-            }
-        }
-
-        return bestCandidate;
-    }
-
-    /// <summary>Clears hover highlight and resets crosshair color.</summary>
     private void ClearHover()
     {
-        if (_hoveredItem == null) return;
-        _hoveredItem.SetHighlight(false);
-        _hoveredItem = null;
-        SetCrosshairColor(_defaultCrosshairColor);
+        // Now handled by PlayerInteractionController
     }
+
+    // ──────────────────────────── Detection ────────────────────────────
+    // Detection is now handled by PlayerInteractionController.
 
     // ──────────────────────────── Input ────────────────────────────
-
-    /// <summary>Reads interact (LMB), throw (RMB), and drink (F) inputs.</summary>
-    private void ProcessInput()
-    {
-        if (_interactCooldownTimer > 0f)
-        {
-            _interactCooldownTimer -= Time.deltaTime;
-            return;
-        }
-
-        bool interactPressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        bool throwPressed   = Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
-        bool drinkPressed   = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
-
-        if (drinkPressed && _heldItem != null && _heldItem.IsDrinkable)
-        {
-            StartDrinking();
-            return;
-        }
-
-        if (interactPressed)
-        {
-            if (_heldItem == null && _hoveredItem != null)
-            {
-                Pickup(_hoveredItem);
-                _interactCooldownTimer = INTERACT_COOLDOWN;
-            }
-            else if (_heldItem != null)
-            {
-                Drop();
-                _interactCooldownTimer = INTERACT_COOLDOWN;
-            }
-        }
-        else if (throwPressed && _heldItem != null)
-        {
-            Throw();
-            _interactCooldownTimer = INTERACT_COOLDOWN;
-        }
-    }
+    // Input is now handled by PlayerInteractionController and HandleHeldActions().
 
     // ──────────────────────────── Pickup / Drop / Throw ────────────────────────────
 
     /// <summary>Picks up the target item and registers it in the player's inventory.</summary>
-    private void Pickup(Pickupable target)
+    public void Pickup(Pickupable target)
     {
+        if (target == null) return;
         _heldItem = target;
         _heldItem.OnPickedUp();
 

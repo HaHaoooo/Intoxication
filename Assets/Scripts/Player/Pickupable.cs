@@ -5,13 +5,22 @@ using UnityEngine;
 /// Requires a Rigidbody on the same GameObject.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
-public class Pickupable : MonoBehaviour
+public class Pickupable : MonoBehaviour, IInteractable
 {
     [Header("Highlight")]
     [SerializeField] protected Color highlightEmissionColor = new Color(0.15f, 0.15f, 0.02f);
 
     [Header("Interaction")]
     [SerializeField] private bool isDrinkable;
+
+    // IInteractable Implementation
+    public string GetActionName() => "Pick Up";
+    public InteractionKey GetPreferredKey() => InteractionKey.E;
+    bool IInteractable.CanInteract() => !IsHeld;
+    void IInteractable.OnInteract()
+    {
+        // Handled by unified PlayerInteractionController which calls PlayerPickupController
+    }
 
 
     /// <summary>Whether this item can be consumed by the player (e.g. wine bottles).</summary>
@@ -186,8 +195,11 @@ public class Pickupable : MonoBehaviour
         // Freeze physics (order matters: clear velocity BEFORE setting kinematic)
         if (_rigidbody != null)
         {
-            _rigidbody.linearVelocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
+            if (!_rigidbody.isKinematic)
+            {
+                _rigidbody.linearVelocity = Vector3.zero;
+                _rigidbody.angularVelocity = Vector3.zero;
+            }
             _rigidbody.isKinematic = true;
             _rigidbody.useGravity = false;
         }
@@ -224,6 +236,9 @@ public class Pickupable : MonoBehaviour
             _rigidbody.isKinematic = false;
             _rigidbody.useGravity = true;
         }
+
+        // Ensure it is unparented if it was attached to a bone/holdpoint
+        transform.SetParent(null);
 
         Debug.Log($"[Pickup] '{name}' released.");
     }

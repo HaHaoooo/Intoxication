@@ -94,8 +94,8 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
     // IInteractable
     // -------------------------------------------------------------------------
 
-    /// <summary>Returns the interaction prompt shown to the player.</summary>
-    public string GetInteractionPrompt() => promptText;
+    public string GetActionName() => "Talk";
+    public InteractionKey GetPreferredKey() => InteractionKey.F;
 
     /// <summary>Only interactable before the sequence has started.</summary>
     public bool CanInteract() => !_isScaring && !_hasScared;
@@ -287,9 +287,18 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
         {
             foreach (Material mat in r.materials)
             {
-                Color c = mat.color;
-                c.a = alpha;
-                mat.color = c;
+                if (mat.HasProperty("_BaseColor"))
+                {
+                    Color c = mat.GetColor("_BaseColor");
+                    c.a = alpha;
+                    mat.SetColor("_BaseColor", c);
+                }
+                else
+                {
+                    Color c = mat.color;
+                    c.a = alpha;
+                    mat.color = c;
+                }
             }
         }
     }
@@ -300,7 +309,19 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
         for (int i = 0; i < renderers.Length; i++)
         {
             if (i < cache.Length)
+            {
                 renderers[i].materials = cache[i];
+                // Force Opaque mode if they were opaque originally (safety)
+                foreach (Material m in renderers[i].materials)
+                {
+                    if (m != null && m.HasProperty("_Surface") && m.GetFloat("_Surface") == 0)
+                    {
+                        m.SetInt("_ZWrite", 1);
+                        m.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                        m.renderQueue = -1; // Default
+                    }
+                }
+            }
         }
     }
 

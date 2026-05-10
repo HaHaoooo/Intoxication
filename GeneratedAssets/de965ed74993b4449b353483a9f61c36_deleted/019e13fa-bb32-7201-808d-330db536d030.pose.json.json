@@ -1,0 +1,12 @@
+{
+    "asset": "de965ed74993b4449b353483a9f61c36",
+    "fileName": "019e13fa-bb32-7201-808d-330db536d030.pose.json",
+    "prompt": "A humanoid running animation. Fast, loopable, no anticipation, start immediately at full speed.",
+    "negativePrompt": "",
+    "model": "unity-text-to-motion",
+    "modelName": "Text to Motion",
+    "customSeed": 1978297104,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "isTrimmed": false
+}

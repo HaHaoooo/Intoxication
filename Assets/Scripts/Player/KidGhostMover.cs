@@ -21,6 +21,9 @@ public class KidGhostMover : MonoBehaviour
 
     private Transform _playerTransform;
     private PlayerHealthController _playerHealth;
+    private Animator _animator;
+    private MonsterProceduralAnimator _monsterAnimator;
+    private static readonly int IsChasingHash = Animator.StringToHash("IsChasing");
 
     /// <summary>
     /// Initializes the ghost mover with a target.
@@ -31,6 +34,12 @@ public class KidGhostMover : MonoBehaviour
     {
         _playerTransform = player;
         moveSpeed = speed;
+        
+        _animator = GetComponent<Animator>();
+        if (_animator == null) _animator = GetComponentInChildren<Animator>();
+
+        _monsterAnimator = GetComponent<MonsterProceduralAnimator>();
+        if (_monsterAnimator == null) _monsterAnimator = GetComponentInChildren<MonsterProceduralAnimator>();
 
         if (player != null)
         {
@@ -42,7 +51,12 @@ public class KidGhostMover : MonoBehaviour
 
     private void Update()
     {
-        if (_playerTransform == null) return;
+        if (_playerTransform == null)
+        {
+            if (_animator != null) _animator.SetBool(IsChasingHash, false);
+            if (_monsterAnimator != null) _monsterAnimator.UpdateSpeed(0f);
+            return;
+        }
 
         Vector3 playerPos = _playerTransform.position;
         Vector3 myPos = transform.position;
@@ -50,6 +64,8 @@ public class KidGhostMover : MonoBehaviour
         if (!float.IsFinite(playerPos.x) || !float.IsFinite(playerPos.y) || !float.IsFinite(playerPos.z) ||
             !float.IsFinite(myPos.x) || !float.IsFinite(myPos.y) || !float.IsFinite(myPos.z))
         {
+            if (_animator != null) _animator.SetBool(IsChasingHash, false);
+            if (_monsterAnimator != null) _monsterAnimator.UpdateSpeed(0f);
             return;
         }
 
@@ -57,14 +73,33 @@ public class KidGhostMover : MonoBehaviour
         float distance = toPlayer.magnitude;
 
         // Move toward the player
+        bool isMoving = false;
         float dt = Time.deltaTime;
         if (distance > 0.0001f && float.IsFinite(dt) && dt > 0)
         {
             float step = moveSpeed * dt;
             if (float.IsFinite(step) && step > 0)
             {
+                // Rotation
+                if (toPlayer != Vector3.zero)
+                {
+                    Quaternion targetRot = Quaternion.LookRotation(toPlayer.normalized, Vector3.up);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * dt);
+                }
+
                 transform.position += toPlayer.normalized * step;
+                isMoving = true;
             }
+        }
+
+        if (_animator != null)
+        {
+            _animator.SetBool(IsChasingHash, isMoving);
+        }
+
+        if (_monsterAnimator != null)
+        {
+            _monsterAnimator.UpdateSpeed(isMoving ? moveSpeed : 0f);
         }
 
         // Head always tracks the player on the horizontal plane
@@ -78,5 +113,13 @@ public class KidGhostMover : MonoBehaviour
         // Distance-based touch — PlayerHealthController handles the invincibility window
         if (distance <= touchDistance)
             _playerHealth?.TryTakeDamage();
-    }
-}
+        }
+
+        /// <summary>Pushes the ghost away from the source position.</summary>
+        public void ApplyKnockback(Vector3 sourcePos, float force)
+        {
+        Vector3 direction = (transform.position - sourcePos).normalized;
+        direction.y = 0; // Keep on ground
+        transform.position += direction * force;
+        }
+        }

@@ -44,14 +44,11 @@ public class BartenderInteraction : MonoBehaviour, IInteractable
             _cachedDialogueUI.OnDialogueEnded -= HandleDialogueEnded;
     }
 
-    /// <summary>Returns the prompt text displayed when the player aims at the bartender.</summary>
-    public string GetInteractionPrompt()
-    {
-        return "[ F ] Talk";
-    }
+    public string GetActionName() => "Talk";
+    public InteractionKey GetPreferredKey() => InteractionKey.F;
 
     /// <summary>Whether the bartender is available for interaction.</summary>
-    public bool CanInteract()
+public bool CanInteract()
     {
         if (_isInDialogue) return false;
         if (oneTimeOnly && _hasInteracted) return false;

@@ -39,7 +39,9 @@ namespace Player
         private PlayerPickupController _pickupController;
         private PlayerInteractionController _interactionController;
 
-        private static readonly int SpeedHash = Animator.StringToHash("Speed");
+        private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
+        private static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
+        private static readonly int DrinkTriggerHash = Animator.StringToHash("Drink");
 
         /// <summary>Last known valid position, used for NaN recovery.</summary>
         private Vector3 _lastSafePosition;
@@ -212,9 +214,12 @@ namespace Player
                 _controller.Move(finalMove);
             }
 
-            if (_animator != null && float.IsFinite(_currentSpeed))
+            if (_animator != null)
             {
-                _animator.SetFloat(SpeedHash, _currentSpeed);
+                bool isMovingInput = _moveInput.sqrMagnitude > 0.01f;
+                // Use raw input flags for instant animation response
+                _animator.SetBool(IsWalkingHash, isMovingInput && !_isSprinting);
+                _animator.SetBool(IsRunningHash, isMovingInput && _isSprinting);
             }
         }
 
@@ -245,6 +250,12 @@ namespace Player
             // If we get here, F was pressed but not used for anything else
             _isThirdPerson = !_isThirdPerson;
             SetCameraView();
+        }
+
+        /// <summary>Fires the Drink trigger on the animator to enter the Drinking state.</summary>
+        public void TriggerDrinkAnimation()
+        {
+            _animator?.SetTrigger(DrinkTriggerHash);
         }
 
         /// <summary>Forces the camera to first person view. Used during drinking.</summary>

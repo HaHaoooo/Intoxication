@@ -25,51 +25,34 @@ public class PlayerInteractionController : MonoBehaviour
     [Tooltip("Radius of the SphereCast used for interaction detection.")]
     [SerializeField] private float detectionRadius = 0.5f;
 
-    [Header("Prompt UI")]
+    [Header("UI Reference")]
     [Tooltip("Optional: assign an existing Text element. If left empty, one is created automatically.")]
     [SerializeField] private Text promptText;
 
-    [SerializeField] private Color promptTextColor = new Color(1f, 0.92f, 0.55f, 1f);
+    [Header("Visual Styling")]
+[SerializeField] private Color promptTextColor = new Color(1f, 0.92f, 0.55f, 1f);
     [SerializeField] private Color promptBgColor = new Color(0f, 0f, 0f, 0.55f);
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugRay = true;
-
-    /// <summary>True while a dialogue is actively playing; blocks other input systems.</summary>
     public bool IsInDialogue => _dialogueUI != null && _dialogueUI.IsActive;
-
-    /// <summary>True when aiming at a valid interactable.</summary>
-    public bool IsLookingAtInteractable => IsTargetAlive();
-
-    /// <summary>True on the frame the F key was consumed by this controller.</summary>
+    public bool IsLookingAtInteractable => _currentTarget != null;
     public bool ConsumedInputThisFrame { get; private set; }
 
     private Camera _mainCam;
     private IInteractable _currentTarget;
     private DialogueUI _dialogueUI;
+    private PlayerPickupController _pickupController;
     private RaycastHit[] _hitBuffer;
     private GameObject _promptRoot;
-
-    /// <summary>Checks whether the current target still exists.</summary>
-    private bool IsTargetAlive()
-    {
-        if (_currentTarget == null) return false;
-        return !(_currentTarget is Object unityObj) || unityObj != null;
-    }
 
     private void Start()
     {
         _mainCam = Camera.main;
         _dialogueUI = DialogueUI.Instance;
+        _pickupController = GetComponent<PlayerPickupController>();
         _hitBuffer = new RaycastHit[maxRaycastHits];
 
         BuildPromptUI();
         SetPromptVisible(false);
-
-        if (_mainCam == null)
-            Debug.LogWarning("[InteractionController] Camera.main is null at Start — will retry in Update.");
-        if (_dialogueUI == null)
-            Debug.LogWarning("[InteractionController] DialogueUI.Instance is null at Start.");
     }
 
     private void Update()
@@ -82,10 +65,6 @@ public class PlayerInteractionController : MonoBehaviour
             if (_mainCam == null) return;
         }
 
-        if (_dialogueUI == null)
-            _dialogueUI = DialogueUI.Instance;
-
-        // During active dialogue, hide prompt and skip detection
         if (IsInDialogue)
         {
             SetPromptVisible(false);
@@ -93,27 +72,13 @@ public class PlayerInteractionController : MonoBehaviour
             return;
         }
 
-        // Clear stale target if the underlying object was destroyed
-        if (!IsTargetAlive())
-        {
-            _currentTarget = null;
-            SetPromptVisible(false);
-        }
-
         DetectInteractable();
         HandleInput();
     }
 
-    /// <summary>
-    /// Uses SphereCast to find the closest IInteractable within range.
-    /// </summary>
     private void DetectInteractable()
     {
         Ray ray = _mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-        if (showDebugRay)
-            Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.cyan);
-
         int hitCount = Physics.SphereCastNonAlloc(ray, detectionRadius, _hitBuffer, interactionDistance, interactableLayerMask);
 
         IInteractable bestTarget = null;
@@ -122,44 +87,67 @@ public class PlayerInteractionController : MonoBehaviour
         for (int i = 0; i < hitCount; i++)
         {
             RaycastHit hit = _hitBuffer[i];
-            float distance = hit.distance;
-
             if (!hit.collider.TryGetComponent<IInteractable>(out var interactable))
                 interactable = hit.collider.GetComponentInParent<IInteractable>();
 
-            if (interactable != null && interactable.CanInteract() && distance < bestDistance)
+            if (interactable != null && interactable.CanInteract() && hit.distance < bestDistance)
             {
                 bestTarget = interactable;
-                bestDistance = distance;
+                bestDistance = hit.distance;
             }
         }
 
-        if (bestTarget != null)
+        if (bestTarget != _currentTarget)
         {
+            // Reset highlight of old target if it was a Pickupable
+            if (_currentTarget is Pickupable oldP) oldP.SetHighlight(false);
+            
             _currentTarget = bestTarget;
-            SetPromptText(_currentTarget.GetInteractionPrompt());
-            SetPromptVisible(true);
-        }
-        else if (_currentTarget != null)
-        {
-            _currentTarget = null;
-            SetPromptVisible(false);
+            
+            if (_currentTarget != null)
+            {
+                if (_currentTarget is Pickupable newP) newP.SetHighlight(true);
+                
+                string key = _currentTarget.GetPreferredKey().ToString();
+                string action = _currentTarget.GetActionName();
+                SetPromptText($"[ {key} ] {action}");
+                SetPromptVisible(true);
+            }
+            else
+            {
+                SetPromptVisible(false);
+            }
         }
     }
 
-    /// <summary>Checks for F-key press to trigger the current interactable.</summary>
     private void HandleInput()
     {
         if (_currentTarget == null) return;
-        if (Keyboard.current == null) return;
+        Keyboard kb = Keyboard.current;
+        if (kb == null) return;
 
-        if (Keyboard.current.fKey.wasPressedThisFrame)
+        InteractionKey preferred = _currentTarget.GetPreferredKey();
+        bool pressed = false;
+
+        if (preferred == InteractionKey.E && kb.eKey.wasPressedThisFrame) pressed = true;
+        if (preferred == InteractionKey.F && kb.fKey.wasPressedThisFrame) pressed = true;
+
+        if (pressed)
         {
             ConsumedInputThisFrame = true;
-            Debug.Log("[InteractionController] F key pressed — triggering interaction.");
-            _currentTarget.OnInteract();
-            SetPromptVisible(false);
+            
+            // If it's a pickupable, delegate to PickupController
+            if (_currentTarget is Pickupable p && _pickupController != null)
+            {
+                _pickupController.Pickup(p);
+            }
+            else
+            {
+                _currentTarget.OnInteract();
+            }
+            
             _currentTarget = null;
+            SetPromptVisible(false);
         }
     }
 

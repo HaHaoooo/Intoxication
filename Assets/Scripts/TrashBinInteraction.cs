@@ -15,12 +15,8 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
     [Tooltip("The homeless man GameObject to reveal after interaction (must be inactive in the scene).")]
     [SerializeField] private GameObject homelessMan;
 
-    [Header("Settings")]
-    [Tooltip("Interaction prompt shown to the player.")]
-    [SerializeField] private string interactionPrompt = "[ F ] Interact";
-
     [Tooltip("Target local Y position the door falls to (ground level relative to its parent).")]
-    [SerializeField] private float doorGroundLocalY = -0.57f;
+[SerializeField] private float doorGroundLocalY = -0.57f;
 
     [Tooltip("Speed at which the door falls (units per second).")]
     [SerializeField] private float fallSpeed = 3f;
@@ -52,11 +48,11 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
         }
     }
 
-    /// <summary>Returns the prompt text shown when the player looks at the trash bin.</summary>
-    public string GetInteractionPrompt() => interactionPrompt;
+    public string GetActionName() => "Interact";
+    public InteractionKey GetPreferredKey() => InteractionKey.F;
 
     /// <summary>Whether the trash bin can still be interacted with.</summary>
-    public bool CanInteract() => !_hasInteracted;
+public bool CanInteract() => !_hasInteracted;
 
     /// <summary>Plays the sound, starts the door falling animation, and reveals the homeless man.</summary>
     public void OnInteract()
