@@ -12,7 +12,12 @@ public enum ObjectiveState
     UseAxe,             // After picking up the axe
     FollowSound,        // After defeating the ghost
     CheckNoise,         // After radio / poster sequence
-    LeaveAlley          // After homeless man dialogue
+    LeaveAlley,         // After homeless man dialogue
+    TalkToBartender,    // Level 2
+    FindHomeless,       // Level 2
+    FollowVoice,        // Level 2
+    ReturnToBar,        // Level 2
+    None                // Hide UI
 }
 
 /// <summary>
@@ -43,7 +48,11 @@ public class ObjectiveUI : MonoBehaviour
         "Use the axe to stop the creature.",
         "Follow the sound from the street.",
         "Check the noise near the trash cans.",
-        "Leave the alley."
+        "Leave the alley.",
+        "Talk to the bartender.",
+        "Find the man near the trash can.",
+        "Follow the sound of the girl.",
+        "Return to the bar one last time."
     };
 
     private void Awake()
@@ -65,8 +74,14 @@ public class ObjectiveUI : MonoBehaviour
     /// <summary>Updates the displayed objective to match the given state.</summary>
     public void Set(ObjectiveState state)
     {
+        if (state == ObjectiveState.None)
+        {
+            if (_panel != null) _panel.SetActive(false);
+            return;
+        }
+
         int index = (int)state;
-        if (index < 0 || index >= ObjectiveMessages.Length)
+if (index < 0 || index >= ObjectiveMessages.Length)
         {
             Debug.LogWarning($"[ObjectiveUI] No message defined for state {state}.");
             return;

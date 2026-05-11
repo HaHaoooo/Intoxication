@@ -90,6 +90,12 @@ public bool CanInteract()
         }
 
         ui.OnDialogueEnded += HandleHomelessDialogueEnded;
+
+        if (TryGetComponent<DialogueEventBridge>(out var bridge))
+        {
+            bridge.RegisterOnce();
+        }
+
         ui.StartDialogue(dialogueData);
 
         Debug.Log("[HomelessManInteraction] Started dialogue with homeless man.");
@@ -150,10 +156,12 @@ public bool CanInteract()
         bottle.SetActive(true);
 
         // Ensure the spawned bottle has the transition script
-        if (bottle.GetComponent<LevelTransitionOnDrink>() == null)
+        LevelTransitionOnDrink transition = bottle.GetComponent<LevelTransitionOnDrink>();
+        if (transition == null)
         {
-            bottle.AddComponent<LevelTransitionOnDrink>();
+            transition = bottle.AddComponent<LevelTransitionOnDrink>();
         }
+        // transition.targetSceneName = "Level 2"; // It's already the default, but we could set it here if needed.
 
         Debug.Log($"[HomelessManInteraction] Bottle spawned at {spawnPos}.");
     }

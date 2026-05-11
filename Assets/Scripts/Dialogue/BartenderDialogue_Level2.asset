@@ -14,12 +14,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
   - speaker: Bartender
-    text: ...
+    text: Welcome! What do you want, sir?
   - speaker: You
-    text: Hello?
+    text: Wait... I was just here.
   - speaker: Bartender
-    text: You're still here.
+    text: Welcome! What do you want, sir?
   - speaker: You
-    text: I just need...
+    text: "Didn\u2019t you already give me a drink?"
   - speaker: Bartender
-    text: Get out. Before it's too late.
+    text: "A drink? No, sir. You haven\u2019t ordered anything yet."
+  - speaker: You
+    text: "That\u2019s impossible. I talked to you. You told me about the murderer."
+  - speaker: Bartender
+    text: Murderer?
+  - speaker: You
+    text: Yes. You said he was nearby.
+  - speaker: Bartender
+    text: I never said that.
+  - speaker: Bartender
+    text: But you did.
+  - speaker: You
+    text: What?
+  - speaker: Bartender
+    text: You were the one who said it first.
+  - speaker: You
+    text: "No... I didn\u2019t."
+  - speaker: Bartender
+    text: Are you sure you remember correctly?
+  - speaker: Bartender
+    text: People see strange things when they drink too much.
+  - speaker: You
+    text: I know what I saw.
+  - speaker: Bartender
+    text: Then go outside. Ask the man near the trash can.
+  - speaker: You
+    text: The homeless man?
+  - speaker: Bartender
+    text: If he is still there.

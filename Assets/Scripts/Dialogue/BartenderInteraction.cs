@@ -82,6 +82,12 @@ public bool CanInteract()
         }
 
         ui.OnDialogueEnded += HandleDialogueEnded;
+        
+        if (TryGetComponent<DialogueEventBridge>(out var bridge))
+        {
+            bridge.RegisterOnce();
+        }
+
         ui.StartDialogue(dialogueData);
 
         Debug.Log("[BartenderInteraction] Started dialogue with bartender.");

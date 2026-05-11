@@ -13,13 +13,35 @@ MonoBehaviour:
   m_Name: HomelessDialogue_Level2
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - speaker: Homeless Man
-    text: You again. Did you find what you were looking for?
   - speaker: You
-    text: I'm trying to get home.
+    text: Hey. Do you remember me?
   - speaker: Homeless Man
-    text: Home is gone, kid. You should have stayed in the alley.
+    text: You came back faster this time.
   - speaker: You
-    text: Who are you?
+    text: "What do you mean \u201Cthis time\u201D?"
   - speaker: Homeless Man
-    text: Doesn't matter now. Just don't look back.
+    text: You always ask the same questions.
+  - speaker: You
+    text: "No, I don\u2019t. I just need to know what\u2019s happening."
+  - speaker: Homeless Man
+    text: Then stop looking at the street.
+  - speaker: You
+    text: What?
+  - speaker: Homeless Man
+    text: Look at yourself.
+  - speaker: You
+    text: "You\u2019re not making sense."
+  - speaker: Homeless Man
+    text: "That\u2019s what they all say before everything disappears."
+  - speaker: You
+    text: Who disappears?
+  - speaker: Homeless Man
+    text: Everyone you made up.
+  - speaker: You
+    text: Made up?
+  - speaker: Homeless Man
+    text: The bartender. The girl. Me.
+  - speaker: You
+    text: "No. You\u2019re real. I\u2019m talking to you right now."
+  - speaker: Homeless Man
+    text: Are you?
