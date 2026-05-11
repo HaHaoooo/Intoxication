@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05baf6446e8e3440d9ed167e8ec04d30, type: 3}
+  m_Name: GirlDialogue_Level2
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - speaker: You
+    text: Stay away from me.
+  - speaker: Little Girl
+    text: You said that last time.
+  - speaker: You
+    text: Last time?
+  - speaker: Little Girl
+    text: You keep trying to escape.
+  - speaker: You
+    text: Escape from what?
+  - speaker: Little Girl
+    text: From the truth.
+  - speaker: You
+    text: What truth?
+  - speaker: Little Girl
+    text: This place is not chasing you.
+  - speaker: Little Girl
+    text: You brought it with you.
+  - speaker: You
+    text: "No. This is because of the murderer. The bartender said\u2014"
+  - speaker: Little Girl
+    text: The bartender says whatever your fear needs him to say.
+  - speaker: You
+    text: Stop.
+  - speaker: Little Girl
+    text: The man near the trash can says whatever your guilt needs him to say.
+  - speaker: You
+    text: Stop talking.
+  - speaker: Little Girl
+    text: And I say what you refuse to hear.
+  - speaker: You
+    text: What do you want from me?
+  - speaker: Little Girl
+    text: Wake up.

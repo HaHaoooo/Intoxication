@@ -1,0 +1,15 @@
+{
+    "asset": "2220483a2e34a447588d6cc7d890f9aa",
+    "fileName": "019e1490-d018-7e33-9e80-9af5663b7f64.wav",
+    "prompt": "creepy child laughing distant echo horror atmosphere",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}
