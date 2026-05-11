@@ -11,7 +11,7 @@ using Player;
 ///   4. Little girl fades out over 1–2 s, ghost fades in over 2 s and starts chasing.
 /// Implements IInteractable for F-key interaction.
 /// </summary>
-public class KidScareInteraction : MonoBehaviour, IInteractable
+public class KidScareInteraction : MonoBehaviour, IInteractable, ILockable
 {
     // -------------------------------------------------------------------------
     // Dialogue lines
@@ -97,8 +97,12 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
     public string GetActionName() => "Talk";
     public InteractionKey GetPreferredKey() => InteractionKey.F;
 
-    /// <summary>Only interactable before the sequence has started.</summary>
-    public bool CanInteract() => !_isScaring && !_hasScared;
+    /// <summary>Requires bartender to have been talked to first.</summary>
+    public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.BartenderDone;
+
+    /// <summary>Only interactable before the sequence has started, and after bartender is done.</summary>
+    public bool CanInteract() => !_isScaring && !_hasScared
+        && (StorylineManager.Instance == null || StorylineManager.Instance.IsUnlocked(RequiredBeat));
 
     /// <summary>Kicks off the full kid scare sequence.</summary>
     public void OnInteract()
@@ -139,6 +143,7 @@ public class KidScareInteraction : MonoBehaviour, IInteractable
         _isScaring = false;
         _hasScared = true;
 
+        StorylineManager.Instance?.Advance(StorylineManager.Beat.LittleGirlDone);
         ObjectiveUI.Instance?.Set(ObjectiveState.FindProtection);
     }
 

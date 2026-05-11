@@ -16,11 +16,14 @@ public class Pickupable : MonoBehaviour, IInteractable
     // IInteractable Implementation
     public string GetActionName() => "Pick Up";
     public InteractionKey GetPreferredKey() => InteractionKey.E;
-    bool IInteractable.CanInteract() => !IsHeld;
+    bool IInteractable.CanInteract() => !IsHeld && !IsStorylineLocked;
     void IInteractable.OnInteract()
     {
         // Handled by unified PlayerInteractionController which calls PlayerPickupController
     }
+
+    /// <summary>Override in subclasses to lock this pickupable behind a storyline beat.</summary>
+    protected virtual bool IsStorylineLocked => false;
 
 
     /// <summary>Whether this item can be consumed by the player (e.g. wine bottles).</summary>

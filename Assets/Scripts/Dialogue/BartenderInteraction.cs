@@ -7,7 +7,7 @@ using UnityEngine;
 /// counter when the dialogue ends.
 /// Attach to the bartender GameObject (requires a Collider for raycast detection).
 /// </summary>
-public class BartenderInteraction : MonoBehaviour, IInteractable
+public class BartenderInteraction : MonoBehaviour, IInteractable, ILockable
 {
     [Header("Dialogue")]
     [Tooltip("The dialogue data asset containing lines for this conversation.")]
@@ -46,6 +46,9 @@ public class BartenderInteraction : MonoBehaviour, IInteractable
 
     public string GetActionName() => "Talk";
     public InteractionKey GetPreferredKey() => InteractionKey.F;
+
+    /// <summary>Bartender is always the first step — no prior beat required.</summary>
+    public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.Start;
 
     /// <summary>Whether the bartender is available for interaction.</summary>
 public bool CanInteract()
@@ -97,6 +100,7 @@ public bool CanInteract()
 
         SpawnBottle();
         ObjectiveUI.Instance?.Set(ObjectiveState.CheckSurroundings);
+        StorylineManager.Instance?.Advance(StorylineManager.Beat.BartenderDone);
         Debug.Log("[BartenderInteraction] Dialogue complete. Bottle spawned.");
     }
 

@@ -82,7 +82,9 @@ public class PlayerInteractionController : MonoBehaviour
         int hitCount = Physics.SphereCastNonAlloc(ray, detectionRadius, _hitBuffer, interactionDistance, interactableLayerMask);
 
         IInteractable bestTarget = null;
+        IInteractable bestLocked = null;
         float bestDistance = float.MaxValue;
+        float bestLockedDistance = float.MaxValue;
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -90,10 +92,18 @@ public class PlayerInteractionController : MonoBehaviour
             if (!hit.collider.TryGetComponent<IInteractable>(out var interactable))
                 interactable = hit.collider.GetComponentInParent<IInteractable>();
 
-            if (interactable != null && interactable.CanInteract() && hit.distance < bestDistance)
+            if (interactable == null) continue;
+
+            if (interactable.CanInteract() && hit.distance < bestDistance)
             {
                 bestTarget = interactable;
                 bestDistance = hit.distance;
+            }
+            else if (!interactable.CanInteract() && interactable is ILockable && hit.distance < bestLockedDistance)
+            {
+                // Track the closest locked-but-visible interactable for hint display
+                bestLocked = interactable;
+                bestLockedDistance = hit.distance;
             }
         }
 
@@ -101,22 +111,44 @@ public class PlayerInteractionController : MonoBehaviour
         {
             // Reset highlight of old target if it was a Pickupable
             if (_currentTarget is Pickupable oldP) oldP.SetHighlight(false);
-            
+
             _currentTarget = bestTarget;
-            
+
             if (_currentTarget != null)
             {
                 if (_currentTarget is Pickupable newP) newP.SetHighlight(true);
-                
+
                 string key = _currentTarget.GetPreferredKey().ToString();
                 string action = _currentTarget.GetActionName();
                 SetPromptText($"[ {key} ] {action}");
+                SetPromptVisible(true);
+            }
+            else if (bestLocked != null)
+            {
+                // Show the storyline hint instead of an interaction prompt
+                string hint = StorylineManager.Instance != null
+                    ? StorylineManager.Instance.GetLockedHint()
+                    : null;
+                SetPromptText(hint ?? "Not available yet.");
                 SetPromptVisible(true);
             }
             else
             {
                 SetPromptVisible(false);
             }
+        }
+        else if (_currentTarget == null && bestLocked != null)
+        {
+            // Keep updating hint text even if locked target hasn't changed
+            string hint = StorylineManager.Instance != null
+                ? StorylineManager.Instance.GetLockedHint()
+                : null;
+            SetPromptText(hint ?? "Not available yet.");
+            SetPromptVisible(true);
+        }
+        else if (_currentTarget == null && bestLocked == null)
+        {
+            SetPromptVisible(false);
         }
     }
 
