@@ -6,7 +6,7 @@ using UnityEngine;
 /// and optionally reveals a hidden homeless man NPC nearby.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
-public class TrashBinInteraction : MonoBehaviour, IInteractable
+public class TrashBinInteraction : MonoBehaviour, IInteractable, ILockable
 {
     [Header("References")]
     [Tooltip("The Door_2 Transform that will fall to the ground on interaction.")]
@@ -51,8 +51,12 @@ public class TrashBinInteraction : MonoBehaviour, IInteractable
     public string GetActionName() => "Interact";
     public InteractionKey GetPreferredKey() => InteractionKey.F;
 
+    /// <summary>Requires the axe to have been picked up first.</summary>
+    public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.AxeDone;
+
     /// <summary>Whether the trash bin can still be interacted with.</summary>
-public bool CanInteract() => !_hasInteracted;
+public bool CanInteract() => !_hasInteracted
+        && (StorylineManager.Instance == null || StorylineManager.Instance.IsUnlocked(RequiredBeat));
 
     /// <summary>Plays the sound, starts the door falling animation, and reveals the homeless man.</summary>
     public void OnInteract()
@@ -69,6 +73,7 @@ public bool CanInteract() => !_hasInteracted;
         if (homelessMan != null)
             homelessMan.SetActive(true);
 
+        StorylineManager.Instance?.Advance(StorylineManager.Beat.TrashBinDone);
         Debug.Log("[TrashBinInteraction] Interaction triggered — door falling, homeless man revealed.");
     }
 }

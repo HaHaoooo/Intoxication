@@ -5,8 +5,13 @@ using UnityEngine;
 /// Placed on the world Axe GameObject.
 /// Now inherits from Pickupable so it can be handled by PlayerPickupController.
 /// </summary>
-public class AxePickup : Pickupable
+public class AxePickup : Pickupable, ILockable
 {
+    /// <summary>Requires the little girl sequence to be done first.</summary>
+    public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.LittleGirlDone;
+
+    protected override bool IsStorylineLocked =>
+        StorylineManager.Instance != null && !StorylineManager.Instance.IsUnlocked(RequiredBeat);
     [Header("Axe Settings")]
     [Tooltip("The bone transform where the axe will be parented (e.g. hand.R).")]
     public Transform handBone;
@@ -92,8 +97,9 @@ public class AxePickup : Pickupable
         if (weapon == null) weapon = player.AddComponent<AxeWeapon>();
         weapon.Enable();
 
-        // 6. Update objective directly
+        // 6. Update objective and advance storyline
         ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
+        StorylineManager.Instance?.Advance(StorylineManager.Beat.AxeDone);
         
         Debug.Log("[AxePickup] Axe picked up and attached to hand.");
     }

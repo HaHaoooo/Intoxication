@@ -7,7 +7,7 @@ using UnityEngine;
 /// a short echo of the wife's voice before finishing.
 /// Attach to the homeless GameObject (requires a Collider for raycast detection).
 /// </summary>
-public class HomelessManInteraction : MonoBehaviour, IInteractable
+public class HomelessManInteraction : MonoBehaviour, IInteractable, ILockable
 {
     [Header("Dialogue")]
     [Tooltip("The dialogue data asset containing lines for this conversation.")]
@@ -56,11 +56,15 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable
     public string GetActionName() => "Talk";
     public InteractionKey GetPreferredKey() => InteractionKey.F;
 
+    /// <summary>Requires the trash bin to have been interacted with first.</summary>
+    public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.TrashBinDone;
+
     /// <summary>Whether the homeless man is available for interaction.</summary>
 public bool CanInteract()
     {
         if (_isInDialogue) return false;
         if (oneTimeOnly && _hasInteracted) return false;
+        if (StorylineManager.Instance != null && !StorylineManager.Instance.IsUnlocked(RequiredBeat)) return false;
         return dialogueData != null;
     }
 
@@ -125,6 +129,7 @@ public bool CanInteract()
 
         SpawnBottle();
 
+        StorylineManager.Instance?.Advance(StorylineManager.Beat.HomelessDone);
         ObjectiveUI.Instance?.Set(ObjectiveState.LeaveAlley);
         Debug.Log("[HomelessManInteraction] Full sequence complete. Bottle spawned.");
     }
