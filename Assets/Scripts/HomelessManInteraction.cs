@@ -13,6 +13,16 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable
     [Tooltip("The dialogue data asset containing lines for this conversation.")]
     [SerializeField] private DialogueData dialogueData;
 
+    [Header("Bottle Spawn")]
+    [Tooltip("The bottle prefab to instantiate after dialogue.")]
+    [SerializeField] private GameObject bottlePrefab;
+
+    [Tooltip("The Transform where the bottle will be placed.")]
+    [SerializeField] private Transform bottleSpawnPoint;
+
+    [Tooltip("Scale applied to the spawned bottle.")]
+    [SerializeField] private Vector3 bottleScale = new Vector3(0.2f, 0.2f, 0.2f);
+
     [Header("State")]
     [Tooltip("If true, the interaction can only be triggered once.")]
     [SerializeField] private bool oneTimeOnly = true;
@@ -107,7 +117,39 @@ public bool CanInteract()
         _isInDialogue = false;
         _hasInteracted = true;
 
+        SpawnBottle();
+
         ObjectiveUI.Instance?.Set(ObjectiveState.LeaveAlley);
-        Debug.Log("[HomelessManInteraction] Full sequence complete.");
+        Debug.Log("[HomelessManInteraction] Full sequence complete. Bottle spawned.");
+    }
+
+    /// <summary>Instantiates the bottle at the spawn point.</summary>
+    private void SpawnBottle()
+    {
+        if (bottlePrefab == null)
+        {
+            Debug.LogWarning("[HomelessManInteraction] No bottle prefab assigned.");
+            return;
+        }
+
+        Vector3 spawnPos = bottleSpawnPoint != null
+            ? bottleSpawnPoint.position
+            : transform.position + transform.forward * 1.2f + Vector3.up * 0.5f;
+
+        Quaternion spawnRot = bottleSpawnPoint != null
+            ? bottleSpawnPoint.rotation
+            : Quaternion.identity;
+
+        GameObject bottle = Instantiate(bottlePrefab, spawnPos, spawnRot);
+        bottle.transform.localScale = bottleScale;
+        bottle.SetActive(true);
+
+        // Ensure the spawned bottle has the transition script
+        if (bottle.GetComponent<LevelTransitionOnDrink>() == null)
+        {
+            bottle.AddComponent<LevelTransitionOnDrink>();
+        }
+
+        Debug.Log($"[HomelessManInteraction] Bottle spawned at {spawnPos}.");
     }
 }

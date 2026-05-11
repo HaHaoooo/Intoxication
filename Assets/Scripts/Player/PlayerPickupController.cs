@@ -577,6 +577,13 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
         {
             RemoveFromInventory(_heldItem);
             GameObject itemObj = _heldItem.gameObject;
+
+            // Check if the item has a transition script
+            if (itemObj.TryGetComponent<LevelTransitionOnDrink>(out var transition))
+            {
+                transition.OnDrunk();
+            }
+
             _heldItem = null;
             Destroy(itemObj);
             Debug.Log("[Pickup] Item consumed and destroyed.");
