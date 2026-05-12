@@ -42,66 +42,33 @@ public class AxePickup : Pickupable, ILockable
     /// </summary>
     public void OnAxePickedUp(GameObject player)
     {
-        // 1. Safety: If handBone is not assigned, try to find a suitable one on the player
-        if (handBone == null)
-        {
-            Debug.LogWarning($"[AxePickup] handBone was not assigned on {name}. Searching player hierarchy...");
-            
-            // Try to find HoldPoint first, as requested
-            handBone = FindBoneByName(player.transform, "HoldPoint");
-            
-            if (handBone == null)
-            {
-                // Try to find a right hand bone specifically, or just any 'hand'
-                handBone = FindBoneByName(player.transform, "hand.r") ?? FindBoneByName(player.transform, "hand");
-            }
-            
-            if (handBone == null)
-            {
-                Debug.LogError("[AxePickup] Could not find a 'hand' bone or 'HoldPoint'. Defaulting to player root.");
-                handBone = player.transform;
-            }
-        }
-
-        // 1b. Extra safety: Ensure Rigidbody is kinematic and has no velocity
+        // 1. Safety: Find components and configure physics
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = true;
             rb.useGravity = false;
-            if (rb.linearVelocity.sqrMagnitude > 0 || rb.angularVelocity.sqrMagnitude > 0)
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
 
-        // 2. Parent axe to the hand bone
-        transform.SetParent(handBone, worldPositionStays: false);
-        
-        transform.localPosition = holdLocalPosition;
-        transform.localEulerAngles = holdLocalRotation;
-        
-        // 3. Force the scale
-        transform.localScale = holdLocalScale;
+        // Disable colliders
+        foreach (var col in GetComponentsInChildren<Collider>()) col.enabled = false;
 
-        string boneName = handBone != null ? handBone.name : "null";
-        Vector3 boneScale = handBone != null ? handBone.localScale : Vector3.one;
-        Debug.Log($"[AxePickup] Applied hold scale: {holdLocalScale}. Attached to: {boneName} (Scale: {boneScale})");
+        // 2. We no longer parent to handBone here; PlayerPickupController handles positioning via SmoothFollowHoldPoint.
+        Debug.Log("[AxePickup] Axe picked up. Following holdPoint via PlayerPickupController.");
 
-        // 4. Thoroughly remove "strong light" and any emission
+        // 3. Thoroughly remove "strong light" and any emission
         CleanupAllLighting();
 
-        // 5. Enable the weapon system on the player
+        // 4. Enable the weapon system on the player
         AxeWeapon weapon = player.GetComponent<AxeWeapon>();
         if (weapon == null) weapon = player.AddComponent<AxeWeapon>();
         weapon.Enable();
 
-        // 6. Update objective and advance storyline
+        // 5. Update objective and advance storyline
         ObjectiveUI.Instance?.Set(ObjectiveState.UseAxe);
         StorylineManager.Instance?.Advance(StorylineManager.Beat.AxeDone);
-        
-        Debug.Log("[AxePickup] Axe picked up and attached to hand.");
     }
 
     private Transform FindBoneByName(Transform parent, string nameSnippet)

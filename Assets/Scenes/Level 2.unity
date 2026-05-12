@@ -2088,7 +2088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1fa42922e5577467ba41c997b189c1e1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.17
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1fa42922e5577467ba41c997b189c1e1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -111080,7 +111080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KidScareInteraction
   scareTexture: {fileID: 2800000, guid: e3f6688e70c77499db5107e11cf57f8e, type: 3}
   screamClip: {fileID: 8300000, guid: a2ac3ef07695e46b79806c6d5da884c8, type: 3}
-  kidGhostPrefab: {fileID: 7947390752106915711, guid: 53c77a75449514716957f58233762040, type: 3}
+  kidGhostPrefab: {fileID: 968032921562866191, guid: 53c77a75449514716957f58233762040, type: 3}
   kidVisualRoot: {fileID: 2032496552}
   playerObject: {fileID: 205137769}
   scareRawImage: {fileID: 484275762}

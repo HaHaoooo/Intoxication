@@ -165,6 +165,10 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
     private void HandleHeldActions()
     {
         if (_heldItem == null || _isDrinking) return;
+
+        // Prevent immediate drop if interaction system just picked this up
+        if (_interactionController != null && _interactionController.ConsumedInputThisFrame) return;
+
         if (_interactCooldownTimer > 0f)
         {
             _interactCooldownTimer -= Time.deltaTime;
@@ -200,8 +204,8 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
     {
         ExecutePendingReparent();
 
-        // Skip smooth follow for Axe as it is parented and managed by AxePickup/AxeWeapon
-        if (_heldItem != null && !_isDrinking && !(_heldItem is AxePickup))
+        // Use smooth follow for all held items, including the Axe
+        if (_heldItem != null && !_isDrinking)
         {
             SmoothFollowHoldPoint();
         }
@@ -273,7 +277,7 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
 
     // ──────────────────────────── Pickup / Drop / Throw ────────────────────────────
 
-    /// <summary>Picks up the target item and registers it in the player's inventory.</summary>
+    /// <summary>Picks up the target item.</summary>
     public void Pickup(Pickupable target)
     {
         if (target == null) return;
@@ -291,19 +295,13 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
             target.transform.rotation = holdPoint.rotation;
         }
 
-        // Register in inventory
-        if (PlayerInventory.Instance != null)
-        {
-            var item = new Player.InventoryItem(target.name, null, target.IsDrinkable, target);
-            PlayerInventory.Instance.AddItem(item);
-        }
-
         ClearHover();
+        _interactCooldownTimer = INTERACT_COOLDOWN; // Set cooldown after pickup
         PlaySound(pickupSound, pickupVolume);
         SetCrosshairVisible(false);
-    }
+        }
 
-    /// <summary>Drops the held item at its current position and removes it from inventory.</summary>
+    /// <summary>Drops the held item at its current position.</summary>
     private void Drop()
     {
         if (_heldItem == null) return;
@@ -315,17 +313,16 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
             if (weapon != null) weapon.enabled = false;
         }
 
-        RemoveFromInventory(_heldItem);
         ExitInspectIfActive();
         _heldItem.OnReleased();
         _heldItem = null;
         PlaySound(dropSound, dropVolume);
         SetCrosshairVisible(true);
-    }
+        }
 
-    /// <summary>Throws the held item forward and removes it from inventory.</summary>
-    private void Throw()
-    {
+        /// <summary>Throws the held item forward.</summary>
+        private void Throw()
+        {
         if (_heldItem == null) return;
 
         // Special handling for Axe: disable weapon component
@@ -336,7 +333,6 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
         }
 
         Pickupable item = _heldItem;
-        RemoveFromInventory(item);
         ExitInspectIfActive();
         item.OnReleased();
         _heldItem = null;
@@ -565,7 +561,7 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
         }
     }
 
-    /// <summary>Ends the drinking action: restores controls, removes from inventory, and destroys the consumed item.</summary>
+    /// <summary>Ends the drinking action: restores controls and destroys the consumed item.</summary>
     private void FinishDrinking()
     {
         _isDrinking = false;
@@ -575,7 +571,6 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
 
         if (_heldItem != null)
         {
-            RemoveFromInventory(_heldItem);
             GameObject itemObj = _heldItem.gameObject;
 
             // Check if the item has a transition script
@@ -590,21 +585,6 @@ public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && 
         }
 
         SetCrosshairVisible(true);
-    }
-
-    /// <summary>Finds and removes the inventory entry matching the given Pickupable.</summary>
-    private static void RemoveFromInventory(Pickupable target)
-    {
-        if (PlayerInventory.Instance == null) return;
-
-        foreach (Player.InventoryItem entry in PlayerInventory.Instance.Items)
-        {
-            if (entry.sourcePickupable == target)
-            {
-                PlayerInventory.Instance.RemoveItem(entry);
-                return;
-            }
-        }
     }
 
     // ──────────────────────────── Drink Prompt UI ────────────────────────────

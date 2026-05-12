@@ -235,6 +235,7 @@ public class KidScareInteraction : MonoBehaviour, IInteractable, ILockable
         }
 
         GameObject ghost = Instantiate(kidGhostPrefab, transform.position, transform.rotation);
+        // Removed manual scale override
 
         Transform playerTransform = null;
         if (playerObject != null)
@@ -247,11 +248,16 @@ public class KidScareInteraction : MonoBehaviour, IInteractable, ILockable
             if (movement != null) playerTransform = movement.transform;
         }
 
-        KidGhostMover mover = ghost.AddComponent<KidGhostMover>();
+        KidGhostMover mover = ghost.GetComponent<KidGhostMover>();
+        if (mover == null) mover = ghost.AddComponent<KidGhostMover>();
+        // Removed touchDistance scaling
         mover.Initialize(playerTransform, ghostMoveSpeed);
 
-        HealthComponent ghostHealth = ghost.AddComponent<HealthComponent>();
-        ghost.AddComponent<GhostHealthController>();
+        HealthComponent ghostHealth = ghost.GetComponent<HealthComponent>();
+        if (ghostHealth == null) ghostHealth = ghost.AddComponent<HealthComponent>();
+        
+        if (ghost.GetComponent<GhostHealthController>() == null)
+            ghost.AddComponent<GhostHealthController>();
 
         // Set fully transparent if fading in
         if (startInvisible)

@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class AxeWeapon : MonoBehaviour
 {
-    private const float DamagePerSwing = 50f;
+    private const float DamagePerSwing = 10f;
 
     [Header("Settings")]
     [Tooltip("Maximum distance from the player at which a swing can hit the ghost.")]
@@ -92,17 +92,10 @@ public class AxeWeapon : MonoBehaviour
 
         ghostHealth.TakeDamage(DamagePerSwing);
         Debug.Log($"[AxeWeapon] Hit ghost for {DamagePerSwing} damage. Ghost HP: {ghostHealth.CurrentHealth}");
-
-        // Apply knockback to the ghost mover if it exists
-        KidGhostMover mover = ghost.GetComponent<KidGhostMover>();
-        if (mover != null)
-        {
-            mover.ApplyKnockback(transform.position, 1.5f);
-        }
         }
 
-    private System.Collections.IEnumerator SwingRoutine()
-    {
+        private System.Collections.IEnumerator SwingRoutine()
+{
         _isSwinging = true;
         AxePickup axe = GetComponentInChildren<AxePickup>();
         if (axe == null)

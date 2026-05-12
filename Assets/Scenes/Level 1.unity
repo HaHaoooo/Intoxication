@@ -118,7 +118,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: fa1600fde8747430a9ad6056d41fc1bc, type: 2}
 --- !u!1 &1910433 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8157954792813844722, guid: 201a795039343294bb137bbed811df3e, type: 3}
@@ -5904,6 +5904,7 @@ GameObject:
   m_Component:
   - component: {fileID: 123231453}
   - component: {fileID: 123231452}
+  - component: {fileID: 123231454}
   m_Layer: 0
   m_Name: TPCamera
   m_TagString: Untagged
@@ -5969,6 +5970,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 205137774}
   m_LocalEulerAnglesHint: {x: 13.263, y: 0, z: 0}
+--- !u!114 &123231454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123231451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &124444241 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1760714182489039777, guid: 201a795039343294bb137bbed811df3e, type: 3}
@@ -10753,6 +10778,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u623F\u5B503 (2)"
       objectReference: {fileID: 0}
+    - target: {fileID: 3123401844208852001, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3213975348449632996, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6993372187207007283, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8703200405523599995, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7839816686979895070, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
@@ -10952,6 +10993,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u623F\u5B503 (1)"
       objectReference: {fileID: 0}
+    - target: {fileID: 3123401844208852001, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3213975348449632996, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3694851510108428206, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.02195536
@@ -10987,6 +11036,14 @@ PrefabInstance:
     - target: {fileID: 3694851510108428206, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -9.814
+      objectReference: {fileID: 0}
+    - target: {fileID: 6993372187207007283, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8703200405523599995, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -16015,6 +16072,8 @@ GameObject:
   - component: {fileID: 205137785}
   - component: {fileID: 205137784}
   - component: {fileID: 205137786}
+  - component: {fileID: 205137788}
+  - component: {fileID: 205137787}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -16199,7 +16258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1208adb24971344cdb8ec3b592c6442e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthController
-  damagePerHit: 20
+  damagePerHit: 15
   invincibilityDuration: 1
 --- !u!114 &205137785
 MonoBehaviour:
@@ -16231,6 +16290,74 @@ MonoBehaviour:
   swingRotationOffset: {x: 45, y: 0, z: 0}
   swingDuration: 0.2
   returnDuration: 0.3
+--- !u!114 &205137787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205137769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
+  ImpulseDefinition:
+    ImpulseChannel: 1
+    ImpulseShape: 2
+    CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ImpulseDuration: 0.2
+    ImpulseType: 0
+    DissipationRate: 0.25
+    RawSignal: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    RepeatMode: 0
+    Randomize: 1
+    TimeEnvelope:
+      AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackTime: 0
+      SustainTime: 0.2
+      DecayTime: 0.7
+      ScaleWithImpact: 1
+      HoldForever: 0
+    ImpactRadius: 100
+    DirectionMode: 0
+    DissipationMode: 2
+    DissipationDistance: 100
+    PropagationSpeed: 343
+  DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &205137788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205137769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99ce9196e5b4842bb89173283628dc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageFeedback
+  impulseForce: 0.5
+  flashDuration: 0.5
+  tintColor: {r: 1, g: 0, b: 0, a: 0.4}
 --- !u!1 &206131320 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2110572426543003071, guid: 8c092c65fed2c2c4da91e4cb13b926f6, type: 3}
@@ -19566,9 +19693,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u623F\u5B503"
       objectReference: {fileID: 0}
+    - target: {fileID: 3123401844208852001, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3213975348449632996, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6993372187207007283, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7839816686979895070, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8703200405523599995, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -23136,6 +23279,7 @@ GameObject:
   - component: {fileID: 380534435}
   - component: {fileID: 380534434}
   - component: {fileID: 380534437}
+  - component: {fileID: 380534438}
   m_Layer: 0
   m_Name: BarCamera
   m_TagString: Untagged
@@ -23286,6 +23430,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &380534438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380534432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &382844493 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2281019860402715375, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
@@ -23725,7 +23893,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7032370345884300548, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -6577962332578976264, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_Lightmapping
@@ -23749,7 +23917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5571788167700111632, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -5494549356013392977, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -23829,7 +23997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2718286328793542652, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -2699967243466407344, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23945,7 +24113,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5652221896959869053, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5739032120541988460, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_Enabled
@@ -25481,7 +25649,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &417195386
 Transform:
@@ -27169,11 +27337,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3123401844208852001, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3213975348449632996, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3401008916999292728, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -27249,7 +27417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6993372187207007283, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7371223639678582469, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -27277,7 +27445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8703200405523599995, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8716683929652968286, guid: ff3a3fd3060320845871720733fc1bb5, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -38248,6 +38416,7 @@ GameObject:
   - component: {fileID: 517553977}
   - component: {fileID: 517553976}
   - component: {fileID: 517553978}
+  - component: {fileID: 517553979}
   m_Layer: 0
   m_Name: StreetCamera
   m_TagString: Untagged
@@ -38369,6 +38538,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &517553979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517553974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &519147088 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8658422279658554519, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
@@ -63919,6 +64112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 896268135}
   - component: {fileID: 896268136}
+  - component: {fileID: 896268137}
   m_Layer: 0
   m_Name: FPCamera
   m_TagString: Untagged
@@ -63984,6 +64178,30 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &896268137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896268134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &897778143
 GameObject:
   m_ObjectHideFlags: 0
@@ -68067,7 +68285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2550463727306718371, guid: 8ed1c21b05537c24bbc40c85e5e8adf5, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2985217594968358461, guid: 8ed1c21b05537c24bbc40c85e5e8adf5, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -82582,7 +82800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7032370345884300548, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -6577962332578976264, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_Lightmapping
@@ -82606,7 +82824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5571788167700111632, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -5494549356013392977, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -82658,7 +82876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2718286328793542652, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -2699967243466407344, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_LocalPosition.z
@@ -82762,7 +82980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5652221896959869053, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5739032120541988460, guid: aefb09d0303c5b64bb9872a55193f466, type: 3}
       propertyPath: m_Enabled
@@ -96957,7 +97175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -674449036139524865, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -569317478442925697, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -103158,7 +103376,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3625893266958174632, guid: b10ba9dbdc9875b4c8bdc0f4358fe6df, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -3433319748109710921, guid: b10ba9dbdc9875b4c8bdc0f4358fe6df, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -103446,7 +103664,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9169994940177800657, guid: b10ba9dbdc9875b4c8bdc0f4358fe6df, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -110998,7 +111216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KidScareInteraction
   scareTexture: {fileID: 2800000, guid: e3f6688e70c77499db5107e11cf57f8e, type: 3}
   screamClip: {fileID: 8300000, guid: a2ac3ef07695e46b79806c6d5da884c8, type: 3}
-  kidGhostPrefab: {fileID: 7947390752106915711, guid: 53c77a75449514716957f58233762040, type: 3}
+  kidGhostPrefab: {fileID: 968032921562866191, guid: 53c77a75449514716957f58233762040, type: 3}
   kidVisualRoot: {fileID: 2032496552}
   playerObject: {fileID: 205137769}
   scareRawImage: {fileID: 484275762}
@@ -111576,7 +111794,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8831696214318807876, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -8721413331925346923, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -111956,7 +112174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1736914406708968778, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -1546812986476688621, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -112196,7 +112414,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2473764087218712737, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2477236633438158978, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -112412,7 +112630,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5951422919008978640, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6112269943511280580, guid: b109a0fd0fb274f42b8a5b738f0a47ad, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -124490,7 +124708,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -674449036139524865, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -569317478442925697, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -148245,7 +148463,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -674449036139524865, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -569317478442925697, guid: 457ca69f20bd1e34392ecd31ec9bac90, type: 3}
       propertyPath: m_StaticEditorFlags

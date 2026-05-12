@@ -15,7 +15,7 @@ public class PlayerHealthController : MonoBehaviour
 
     [Header("Settings")]
     [Tooltip("Damage dealt to the player per ghost touch.")]
-    public float damagePerHit = 20f;
+    public float damagePerHit = 15f;
 
     [Tooltip("Seconds the player is invincible after being hit.")]
     public float invincibilityDuration = 1f;
@@ -43,8 +43,11 @@ public class PlayerHealthController : MonoBehaviour
 
         _health.TakeDamage(damagePerHit);
 
+        if (PlayerDamageFeedback.Instance != null)
+            PlayerDamageFeedback.Instance.PlayFeedback();
+
         if (_health.IsAlive)
-            StartCoroutine(InvincibilityWindow());
+StartCoroutine(InvincibilityWindow());
 
         return true;
     }
