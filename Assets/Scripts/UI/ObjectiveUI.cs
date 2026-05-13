@@ -17,6 +17,7 @@ public enum ObjectiveState
     FindHomeless,       // Level 2
     FollowVoice,        // Level 2
     ReturnToBar,        // Level 2
+    BreakBottle,        // Level 2 — second visit to the bottle
     None                // Hide UI
 }
 
@@ -52,7 +53,8 @@ public class ObjectiveUI : MonoBehaviour
         "Talk to the bartender.",
         "Find the man near the trash can.",
         "Follow the sound of the girl.",
-        "Return to the bar one last time."
+        "Return to the bar one last time.",
+        "Break the bottle."
     };
 
     private void Awake()

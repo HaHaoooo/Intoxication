@@ -168,10 +168,18 @@ public class PlayerInteractionController : MonoBehaviour
         {
             ConsumedInputThisFrame = true;
             
-            // If it's a pickupable, delegate to PickupController
+            // If it's a pickupable, delegate to PickupController.
+            // Guard: do not pick up a second item while already holding one.
             if (_currentTarget is Pickupable p && _pickupController != null)
             {
-                _pickupController.Pickup(p);
+                if (_pickupController.IsHoldingItem)
+                {
+                    Debug.Log("[InteractionController] Already holding an item — ignoring pickup.");
+                }
+                else
+                {
+                    _pickupController.Pickup(p);
+                }
             }
             else
             {

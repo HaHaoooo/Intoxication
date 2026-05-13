@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class AutoFadeIn : MonoBehaviour
@@ -7,11 +8,13 @@ public class AutoFadeIn : MonoBehaviour
 
     private void Start()
     {
-        Invoke(nameof(DoFadeIn), delay);
+        StartCoroutine(DelayedFadeIn());
     }
 
-    private void DoFadeIn()
+    private IEnumerator DelayedFadeIn()
     {
+        // Use unscaled time so the fade-in works regardless of Time.timeScale.
+        yield return new WaitForSecondsRealtime(delay);
         ScreenFadeUI.Instance.FadeFromBlack(fadeDuration);
     }
 }

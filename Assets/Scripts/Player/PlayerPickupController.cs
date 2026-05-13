@@ -49,6 +49,9 @@ public class PlayerPickupController : MonoBehaviour
     /// <summary>True when holding a drinkable item; blocks F-key camera toggle.</summary>
 public bool IsHoldingDrinkable => _heldItem != null && _heldItem.IsDrinkable && !_isDrinking;
 
+    /// <summary>True when any item is currently held (blocks picking up a second one).</summary>
+    public bool IsHoldingItem => _heldItem != null;
+
     /// <summary>True while the procedural drinking action is playing.</summary>
     public bool IsDrinking => _isDrinking;
 

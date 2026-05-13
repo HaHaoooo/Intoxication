@@ -26,8 +26,6 @@ public class AxeWeapon : MonoBehaviour
 
     private float _lastSwingTime = -999f;
     private bool _isEnabled = false;
-    private Quaternion _originalLocalRot;
-    private Vector3 _originalLocalPos;
     private bool _isSwinging = false;
 
     /// <summary>Called by AxePickup to activate the weapon.</summary>
@@ -35,14 +33,6 @@ public class AxeWeapon : MonoBehaviour
     {
         _isEnabled = true;
         enabled = true;
-        
-        // Find the axe object attached to the hand to get its original rotation
-        AxePickup axe = GetComponentInChildren<AxePickup>();
-        if (axe != null)
-        {
-            _originalLocalRot = axe.transform.localRotation;
-            _originalLocalPos = axe.transform.localPosition;
-        }
     }
 
     private void Awake()
@@ -105,8 +95,14 @@ public class AxeWeapon : MonoBehaviour
         }
 
         Transform axeTransform = axe.transform;
-        Quaternion targetRot = _originalLocalRot * Quaternion.Euler(swingRotationOffset);
-        Vector3 targetPos = _originalLocalPos + new Vector3(0.1f, -0.1f, 0.2f); // Slight thrust forward
+
+        // Snapshot the current local pose at swing start so the animation is always
+        // relative to whatever parent (camera in FP, player body in TP) is active now.
+        Quaternion swingBaseRot = axeTransform.localRotation;
+        Vector3 swingBasePos = axeTransform.localPosition;
+
+        Quaternion targetRot = swingBaseRot * Quaternion.Euler(swingRotationOffset);
+        Vector3 targetPos = swingBasePos + new Vector3(0.1f, -0.1f, 0.2f); // Slight thrust forward
 
         // Swing forward (fast)
         float elapsed = 0f;
@@ -114,10 +110,9 @@ public class AxeWeapon : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = elapsed / swingDuration;
-            // Use an easing curve for "snap"
-            float easedT = t * t * (3f - 2f * t); 
-            axeTransform.localRotation = Quaternion.Slerp(_originalLocalRot, targetRot, easedT);
-            axeTransform.localPosition = Vector3.Lerp(_originalLocalPos, targetPos, easedT);
+            float easedT = t * t * (3f - 2f * t);
+            axeTransform.localRotation = Quaternion.Slerp(swingBaseRot, targetRot, easedT);
+            axeTransform.localPosition = Vector3.Lerp(swingBasePos, targetPos, easedT);
             yield return null;
         }
 
@@ -128,13 +123,13 @@ public class AxeWeapon : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / returnDuration;
             float easedT = t * t * (3f - 2f * t);
-            axeTransform.localRotation = Quaternion.Slerp(targetRot, _originalLocalRot, easedT);
-            axeTransform.localPosition = Vector3.Lerp(targetPos, _originalLocalPos, easedT);
+            axeTransform.localRotation = Quaternion.Slerp(targetRot, swingBaseRot, easedT);
+            axeTransform.localPosition = Vector3.Lerp(targetPos, swingBasePos, easedT);
             yield return null;
         }
 
-        axeTransform.localRotation = _originalLocalRot;
-        axeTransform.localPosition = _originalLocalPos;
+        axeTransform.localRotation = swingBaseRot;
+        axeTransform.localPosition = swingBasePos;
         _isSwinging = false;
     }
 
