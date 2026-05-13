@@ -16,9 +16,13 @@ public enum ObjectiveState
     TalkToBartender,    // Level 2
     FindHomeless,       // Level 2
     FollowVoice,        // Level 2
+    DrinkBottle,        // Level 2 — homeless man gone, drink any alley bottle
     ReturnToBar,        // Level 2
-    BreakBottle,        // Level 2 — second visit to the bottle
-    None                // Hide UI
+    BreakBottle,         // Level 2 — second visit to the bottle
+    Level3FindBedroom,   // Level 3 — entered the foyer, go to the left bedroom
+    Level3PutDownAxe,    // Level 3 — inside the bedroom, put down the axe
+    Level3FaceTheTruth,  // Level 3 — axe dropped, choose what to do with the bottle
+    None                 // Hide UI
 }
 
 /// <summary>
@@ -53,8 +57,12 @@ public class ObjectiveUI : MonoBehaviour
         "Talk to the bartender.",
         "Find the man near the trash can.",
         "Follow the sound of the girl.",
+        "Drink one of the bottles.",
         "Return to the bar one last time.",
-        "Break the bottle."
+        "Break the bottle.",
+        "Open the bedroom door on the left.",
+        "Put down the axe.",
+        "Break the bottle, or drink again."
     };
 
     private void Awake()

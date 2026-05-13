@@ -1,7 +1,8 @@
 public enum InteractionKey
 {
     E,
-    F
+    F,
+    C
 }
 
 /// <summary>

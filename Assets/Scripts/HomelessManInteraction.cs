@@ -9,10 +9,6 @@ using UnityEngine;
 /// </summary>
 public class HomelessManInteraction : MonoBehaviour, IInteractable, ILockable
 {
-    [Header("Dialogue")]
-    [Tooltip("The dialogue data asset containing lines for this conversation.")]
-    [SerializeField] private DialogueData dialogueData;
-
     [Header("Bottle Spawn")]
     [Tooltip("The bottle prefab to instantiate after dialogue.")]
     [SerializeField] private GameObject bottlePrefab;
@@ -27,11 +23,32 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable, ILockable
     [Tooltip("If true, the interaction can only be triggered once.")]
     [SerializeField] private bool oneTimeOnly = true;
 
+    private static readonly DialogueData.Line[] HomelessLines = new[]
+    {
+        new DialogueData.Line { speaker = "Homeless Man", text = "Leave." },
+        new DialogueData.Line { speaker = "You",          text = "I am not here to hurt you." },
+        new DialogueData.Line { speaker = "Homeless Man", text = "That is what you said before." },
+        new DialogueData.Line { speaker = "You",          text = "Before what?" },
+        new DialogueData.Line { speaker = "Homeless Man", text = "Before the screaming. Before the axe. Before you started calling it self-defense." },
+        new DialogueData.Line { speaker = "You",          text = "I do not know what you are talking about." },
+        new DialogueData.Line { speaker = "Homeless Man", text = "Of course you do not. That bottle always takes the memory first." },
+        new DialogueData.Line { speaker = "You",          text = "I just need my keys. I need to get home." },
+        new DialogueData.Line { speaker = "Homeless Man", text = "Home? You do not get to say that word anymore." },
+    };
+
     private static readonly DialogueData.Line[] WifeLines = new[]
     {
         new DialogueData.Line { speaker = "Wife's Voice", text = "You promised this would be the last time." },
-        new DialogueData.Line { speaker = "Wife's Voice", text = "She waited for you." },
-        new DialogueData.Line { speaker = "Wife's Voice", text = "We both did." },
+        new DialogueData.Line { speaker = "You",          text = "Who said that?" },
+        new DialogueData.Line { speaker = "Wife's Voice", text = "She waited by the door." },
+        new DialogueData.Line { speaker = "You",          text = "Stop." },
+        new DialogueData.Line { speaker = "Wife's Voice", text = "I waited too." },
+    };
+
+    private static readonly DialogueData.Line[] PostBottleLines = new[]
+    {
+        new DialogueData.Line { speaker = "Homeless Man", text = "There it is. The easiest door out." },
+        new DialogueData.Line { speaker = "You",          text = "I just need to calm down." },
     };
 
     private bool _hasInteracted;
@@ -50,6 +67,7 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable, ILockable
         {
             _cachedDialogueUI.OnDialogueEnded -= HandleHomelessDialogueEnded;
             _cachedDialogueUI.OnDialogueEnded -= HandleWifeDialogueEnded;
+            _cachedDialogueUI.OnDialogueEnded -= HandlePostBottleDialogueEnded;
         }
     }
 
@@ -60,12 +78,12 @@ public class HomelessManInteraction : MonoBehaviour, IInteractable, ILockable
     public StorylineManager.Beat RequiredBeat => StorylineManager.Beat.TrashBinDone;
 
     /// <summary>Whether the homeless man is available for interaction.</summary>
-public bool CanInteract()
+    public bool CanInteract()
     {
         if (_isInDialogue) return false;
         if (oneTimeOnly && _hasInteracted) return false;
         if (StorylineManager.Instance != null && !StorylineManager.Instance.IsUnlocked(RequiredBeat)) return false;
-        return dialogueData != null;
+        return true;
     }
 
     /// <summary>Starts the homeless man dialogue sequence.</summary>
@@ -89,14 +107,14 @@ public bool CanInteract()
             return;
         }
 
-        ui.OnDialogueEnded += HandleHomelessDialogueEnded;
-
         if (TryGetComponent<DialogueEventBridge>(out var bridge))
-        {
             bridge.RegisterOnce();
-        }
 
-        ui.StartDialogue(dialogueData);
+        DialogueData homelessData = ScriptableObject.CreateInstance<DialogueData>();
+        homelessData.lines = HomelessLines;
+
+        ui.OnDialogueEnded += HandleHomelessDialogueEnded;
+        ui.StartDialogue(homelessData);
 
         Debug.Log("[HomelessManInteraction] Started dialogue with homeless man.");
     }
@@ -109,7 +127,6 @@ public bool CanInteract()
     {
         _cachedDialogueUI.OnDialogueEnded -= HandleHomelessDialogueEnded;
 
-        // Build a transient DialogueData for the wife's echo lines.
         DialogueData wifeData = ScriptableObject.CreateInstance<DialogueData>();
         wifeData.lines = WifeLines;
 
@@ -119,19 +136,36 @@ public bool CanInteract()
         Debug.Log("[HomelessManInteraction] Starting wife's voice echo.");
     }
 
-    /// <summary>Called when the wife's voice echo finishes — marks the full sequence as complete.</summary>
+    /// <summary>
+    /// Called when the wife's voice echo finishes.
+    /// Spawns the bottle, then plays the homeless man's reaction to it.
+    /// </summary>
     private void HandleWifeDialogueEnded()
     {
         _cachedDialogueUI.OnDialogueEnded -= HandleWifeDialogueEnded;
 
+        SpawnBottle();
+
+        DialogueData postBottleData = ScriptableObject.CreateInstance<DialogueData>();
+        postBottleData.lines = PostBottleLines;
+
+        _cachedDialogueUI.OnDialogueEnded += HandlePostBottleDialogueEnded;
+        _cachedDialogueUI.StartDialogue(postBottleData);
+
+        Debug.Log("[HomelessManInteraction] Bottle spawned. Playing post-bottle lines.");
+    }
+
+    /// <summary>Called after the homeless man's final reaction — marks the full sequence as complete.</summary>
+    private void HandlePostBottleDialogueEnded()
+    {
+        _cachedDialogueUI.OnDialogueEnded -= HandlePostBottleDialogueEnded;
+
         _isInDialogue = false;
         _hasInteracted = true;
 
-        SpawnBottle();
-
         StorylineManager.Instance?.Advance(StorylineManager.Beat.HomelessDone);
         ObjectiveUI.Instance?.Set(ObjectiveState.LeaveAlley);
-        Debug.Log("[HomelessManInteraction] Full sequence complete. Bottle spawned.");
+        Debug.Log("[HomelessManInteraction] Full sequence complete.");
     }
 
     /// <summary>Instantiates the bottle at the spawn point.</summary>

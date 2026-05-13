@@ -15,21 +15,20 @@ public class RadioInteraction : MonoBehaviour
 
     private static readonly DialogueData.Line[] RadioLines = new[]
     {
-        new DialogueData.Line { speaker = "Radio", text = "Breaking news tonight..." },
-        new DialogueData.Line { speaker = "Radio", text = "Police are still searching for the suspect connected to the recent serial murder case." },
-        new DialogueData.Line { speaker = "Radio", text = "Witnesses report that the suspect may appear confused, unstable, and intoxicated." },
-        new DialogueData.Line { speaker = "Radio", text = "Authorities warn citizens to avoid dark alleyways and report any suspicious behavior." },
-        new DialogueData.Line { speaker = "You",   text = "Turn it off..." },
-        new DialogueData.Line { speaker = "Radio", text = "The suspect may be carrying a sharp object." },
+        new DialogueData.Line { speaker = "Radio", text = "Breaking news tonight. Police are still searching for the suspect connected to the recent serial murder case." },
+        new DialogueData.Line { speaker = "You",   text = "Turn it off." },
+        new DialogueData.Line { speaker = "Radio", text = "Witnesses report that the suspect may appear intoxicated, unstable, and unable to remember recent events." },
         new DialogueData.Line { speaker = "You",   text = "Shut up." },
-        new DialogueData.Line { speaker = "Radio", text = "Police have not released the suspect's name, but sources say he may have a wife and child." },
-        new DialogueData.Line { speaker = "You",   text = "I said shut up!" },
+        new DialogueData.Line { speaker = "Radio", text = "Authorities warn citizens to avoid dark alleyways and report any suspicious behavior." },
+        new DialogueData.Line { speaker = "You",   text = "I said shut up." },
+        new DialogueData.Line { speaker = "Radio", text = "The suspect may be carrying a sharp object. Sources say he may have had a wife and young daughter." },
+        new DialogueData.Line { speaker = "You",   text = "That is enough!" },
     };
 
     private static readonly DialogueData.Line[] AfterRadioLines = new[]
     {
-        new DialogueData.Line { speaker = "You", text = "That's not her." },
-        new DialogueData.Line { speaker = "You", text = "I don't even know who \"her\" is." },
+        new DialogueData.Line { speaker = "You", text = "That is not me." },
+        new DialogueData.Line { speaker = "You", text = "That cannot be me." },
     };
 
     [Header("Trigger Settings")]

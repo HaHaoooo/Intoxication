@@ -39690,6 +39690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BartenderInteraction
   dialogueData: {fileID: 11400000, guid: 5bba48ebe9a944dfaa314731cf3cadfc, type: 2}
+  spawnBottleAfterDialogue: 0
   bottlePrefab: {fileID: 4309229635962821934, guid: 6a8ddc58dd6f140f89f3e1cea8a6b73c, type: 3}
   bottleSpawnPoint: {fileID: 99828156}
   bottleScale: {x: 0.2, y: 0.2, z: 0.2}

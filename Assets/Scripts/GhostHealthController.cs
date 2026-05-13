@@ -11,9 +11,8 @@ public class GhostHealthController : MonoBehaviour
 {
     private static readonly DialogueData.Line[] PostFightLines = new[]
     {
-        new DialogueData.Line { speaker = "You",         text = "What did I just do?" },
-        new DialogueData.Line { speaker = "You",         text = "No... no, that wasn't real." },
-        new DialogueData.Line { speaker = "Little Girl", text = "You always say that." },
+        new DialogueData.Line { speaker = "You", text = "No... That was not real." },
+        new DialogueData.Line { speaker = "You", text = "It was not real." },
     };
 
     private HealthComponent _health;

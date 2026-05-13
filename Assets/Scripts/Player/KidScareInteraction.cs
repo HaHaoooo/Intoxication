@@ -19,14 +19,14 @@ public class KidScareInteraction : MonoBehaviour, IInteractable, ILockable
 
     private static readonly DialogueData.Line[] PreScareLines = new[]
     {
-        new DialogueData.Line { speaker = "You",         text = "Hey! Are you okay?" },
+        new DialogueData.Line { speaker = "You",         text = "Hey. Are you lost?" },
         new DialogueData.Line { speaker = "Little Girl", text = "You were supposed to come home." },
         new DialogueData.Line { speaker = "You",         text = "What?" },
         new DialogueData.Line { speaker = "Little Girl", text = "You promised." },
-        new DialogueData.Line { speaker = "You",         text = "I... I don't know you." },
-        new DialogueData.Line { speaker = "Little Girl", text = "Yes, you do." },
+        new DialogueData.Line { speaker = "You",         text = "I do not know you." },
+        new DialogueData.Line { speaker = "Little Girl", text = "You always say that first." },
         new DialogueData.Line { speaker = "You",         text = "Where are your parents?" },
-        new DialogueData.Line { speaker = "Little Girl", text = "You left them too." },
+        new DialogueData.Line { speaker = "Little Girl", text = "You left us." },
     };
 
     private static readonly DialogueData.Line[] PostScareLines = new[]
@@ -34,7 +34,7 @@ public class KidScareInteraction : MonoBehaviour, IInteractable, ILockable
         new DialogueData.Line { speaker = "Little Girl", text = "You forgot again." },
         new DialogueData.Line { speaker = "You",         text = "Stay back." },
         new DialogueData.Line { speaker = "Little Girl", text = "You always forget." },
-        new DialogueData.Line { speaker = "Little Girl", text = "Come home." },
+        new DialogueData.Line { speaker = "You",         text = "I said stay back!" },
     };
 
     // -------------------------------------------------------------------------
