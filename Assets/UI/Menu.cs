@@ -73,7 +73,7 @@ public class Menu : MonoBehaviour
     private void OnPlay()
     {
         PlayClick();
-        SceneManager.LoadScene("Content");
+        SceneManager.LoadScene("Level 1");
     }
 
     private void ShowSettings()
